@@ -11,3 +11,5 @@ description = "Continuosly Produce a wave of Kafka Records."
 [dependencies]
 flo_curves = "0.6.1"
 clap = { version = "4.0.14", features = ["derive", "deprecated", "env", "wrap_help"] }
+log = "0.4.17"
+env_logger = "0.9.1"
