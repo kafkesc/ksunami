@@ -245,7 +245,7 @@ mod tests {
         assert_eq!(20, rec.payload.len());
         assert!(from_utf8(rec.payload.as_slice()).is_ok());
 
-        let mut generator = RecordGenerator::new("topic".to_string(), GeneratorField::RandInt(123, 125)).unwrap();
+        assert!(generator.set_payload_field(GeneratorField::RandInt(123, 125)).is_ok());
         assert!(generator.set_key_field(GeneratorField::RandFloat(1.5, 2.0)).is_ok());
 
         let rec = generator.generate_record().unwrap();
