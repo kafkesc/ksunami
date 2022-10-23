@@ -122,14 +122,8 @@ impl Transition {
 /// Find the control points `P1` and `P2`, between `P0` and `P3`, using the `t` value of `P1` and `P2`.
 fn map_p1t_p2t_to_p0_p3(p0: Coord2, p3: Coord2, p1_t: Coord2, p2_t: Coord2) -> (Coord2, Coord2) {
     (
-        Coord2(
-            between(p0.x(), p3.x(), p1_t.x()),
-            between(p0.y(), p3.y(), p1_t.y()),
-        ),
-        Coord2(
-            between(p0.x(), p3.x(), p2_t.x()),
-            between(p0.y(), p3.y(), p2_t.y()),
-        ),
+        Coord2(between(p0.x(), p3.x(), p1_t.x()), between(p0.y(), p3.y(), p1_t.y())),
+        Coord2(between(p0.x(), p3.x(), p2_t.x()), between(p0.y(), p3.y(), p2_t.y())),
     )
 }
 
@@ -149,113 +143,82 @@ mod tests {
 
     #[test]
     fn test_none() {
-        assert_eq!(
-            Transition::None.ctrl_pts_up(Coord2(0., 0.), Coord2(1., 1.)),
-            None
-        );
+        assert_eq!(Transition::None.ctrl_pts_up(Coord2(0., 0.), Coord2(1., 1.)), None);
     }
 
     #[test]
     fn test_linear() {
-        let (p1, p2) = Transition::Linear
-            .ctrl_pts_up(Coord2(1., 2.), Coord2(30., 40.))
-            .unwrap();
+        let (p1, p2) = Transition::Linear.ctrl_pts_up(Coord2(1., 2.), Coord2(30., 40.)).unwrap();
         assert_eq!(p1, Coord2(1., 2.));
         assert_eq!(p2, Coord2(30., 40.));
 
-        let (p1, p2) = Transition::Linear
-            .ctrl_pts_down(Coord2(1., 40.), Coord2(30., 2.))
-            .unwrap();
+        let (p1, p2) = Transition::Linear.ctrl_pts_down(Coord2(1., 40.), Coord2(30., 2.)).unwrap();
         assert_eq!(p1, Coord2(1., 40.));
         assert_eq!(p2, Coord2(30., 2.));
     }
 
     #[test]
     fn test_ease_in() {
-        let (p1, p2) = Transition::EaseIn
-            .ctrl_pts_up(Coord2(1., 2.), Coord2(32., 44.))
-            .unwrap();
+        let (p1, p2) = Transition::EaseIn.ctrl_pts_up(Coord2(1., 2.), Coord2(32., 44.)).unwrap();
         assert_eq!(p1, Coord2(16.5, 2.));
         assert_eq!(p2, Coord2(32., 44.));
 
-        let (p1, p2) = Transition::EaseIn
-            .ctrl_pts_down(Coord2(1., 44.), Coord2(32., 2.))
-            .unwrap();
+        let (p1, p2) = Transition::EaseIn.ctrl_pts_down(Coord2(1., 44.), Coord2(32., 2.)).unwrap();
         assert_eq!(p1, Coord2(16.5, 44.));
         assert_eq!(p2, Coord2(32., 2.));
     }
 
     #[test]
     fn test_ease_out() {
-        let (p1, p2) = Transition::EaseOut
-            .ctrl_pts_up(Coord2(1., 2.), Coord2(32., 44.))
-            .unwrap();
+        let (p1, p2) = Transition::EaseOut.ctrl_pts_up(Coord2(1., 2.), Coord2(32., 44.)).unwrap();
         assert_eq!(p1, Coord2(1., 2.));
         assert_eq!(p2, Coord2(16.5, 44.));
 
-        let (p1, p2) = Transition::EaseOut
-            .ctrl_pts_down(Coord2(1., 44.), Coord2(32., 2.))
-            .unwrap();
+        let (p1, p2) = Transition::EaseOut.ctrl_pts_down(Coord2(1., 44.), Coord2(32., 2.)).unwrap();
         assert_eq!(p1, Coord2(1., 44.));
         assert_eq!(p2, Coord2(16.5, 2.));
     }
 
     #[test]
     fn test_ease_in_out() {
-        let (p1, p2) = Transition::EaseInOut
-            .ctrl_pts_up(Coord2(11., 3.), Coord2(35., 50.))
-            .unwrap();
+        let (p1, p2) = Transition::EaseInOut.ctrl_pts_up(Coord2(11., 3.), Coord2(35., 50.)).unwrap();
         assert_eq!(p1, Coord2(23., 3.));
         assert_eq!(p2, Coord2(23., 50.));
 
-        let (p1, p2) = Transition::EaseInOut
-            .ctrl_pts_down(Coord2(11., 50.), Coord2(35., 3.))
-            .unwrap();
+        let (p1, p2) = Transition::EaseInOut.ctrl_pts_down(Coord2(11., 50.), Coord2(35., 3.)).unwrap();
         assert_eq!(p1, Coord2(23., 50.));
         assert_eq!(p2, Coord2(23., 3.));
     }
 
     #[test]
     fn test_spike_in() {
-        let (p1, p2) = Transition::SpikeIn
-            .ctrl_pts_up(Coord2(11., 3.), Coord2(35., 50.))
-            .unwrap();
+        let (p1, p2) = Transition::SpikeIn.ctrl_pts_up(Coord2(11., 3.), Coord2(35., 50.)).unwrap();
         assert_eq!(p1, Coord2(11., 50.));
         assert_eq!(p2, Coord2(11., 50.));
 
-        let (p1, p2) = Transition::SpikeIn
-            .ctrl_pts_down(Coord2(11., 50.), Coord2(35., 3.))
-            .unwrap();
+        let (p1, p2) = Transition::SpikeIn.ctrl_pts_down(Coord2(11., 50.), Coord2(35., 3.)).unwrap();
         assert_eq!(p1, Coord2(35., 50.));
         assert_eq!(p2, Coord2(35., 50.));
     }
 
     #[test]
     fn test_spike_out() {
-        let (p1, p2) = Transition::SpikeOut
-            .ctrl_pts_up(Coord2(11., 3.), Coord2(35., 50.))
-            .unwrap();
+        let (p1, p2) = Transition::SpikeOut.ctrl_pts_up(Coord2(11., 3.), Coord2(35., 50.)).unwrap();
         assert_eq!(p1, Coord2(35., 3.));
         assert_eq!(p2, Coord2(35., 3.));
 
-        let (p1, p2) = Transition::SpikeOut
-            .ctrl_pts_down(Coord2(11., 50.), Coord2(35., 3.))
-            .unwrap();
+        let (p1, p2) = Transition::SpikeOut.ctrl_pts_down(Coord2(11., 50.), Coord2(35., 3.)).unwrap();
         assert_eq!(p1, Coord2(11., 3.));
         assert_eq!(p2, Coord2(11., 3.));
     }
 
     #[test]
     fn test_spike_in_out() {
-        let (p1, p2) = Transition::SpikeInOut
-            .ctrl_pts_up(Coord2(11., 3.), Coord2(35., 50.))
-            .unwrap();
+        let (p1, p2) = Transition::SpikeInOut.ctrl_pts_up(Coord2(11., 3.), Coord2(35., 50.)).unwrap();
         assert_eq!(p1, Coord2(11., 50.));
         assert_eq!(p2, Coord2(35., 3.));
 
-        let (p1, p2) = Transition::SpikeInOut
-            .ctrl_pts_down(Coord2(11., 50.), Coord2(35., 3.))
-            .unwrap();
+        let (p1, p2) = Transition::SpikeInOut.ctrl_pts_down(Coord2(11., 50.), Coord2(35., 3.)).unwrap();
         assert_eq!(p1, Coord2(11., 3.));
         assert_eq!(p2, Coord2(35., 50.));
     }

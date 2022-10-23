@@ -1,30 +1,28 @@
+extern crate core;
 #[macro_use]
 extern crate log;
 
+use tokio::time;
+
+use cli::*;
+
+use crate::workload::Workload;
+
 mod cli;
+mod generator;
+mod logging;
 mod transition;
 mod workload;
 
-use std::{thread, time};
-use cli::*;
-use crate::workload::Workload;
-
-fn main() {
-    env_logger::init();
+#[tokio::main]
+async fn main() {
+    logging::init();
 
     let cli = Cli::parse_and_validate();
     trace!("CLI input: {:?}", cli);
 
-    let workload = Workload::new(
-        cli.min,
-        cli.min_sec,
-        cli.max,
-        cli.max_sec,
-        cli.up,
-        cli.up_sec,
-        cli.down,
-        cli.down_sec,
-    );
+    let workload =
+        Workload::new(cli.min, cli.min_sec, cli.max, cli.max_sec, cli.up, cli.up_sec, cli.down, cli.down_sec);
     trace!("Workload created: {:?}", workload);
 
     info!("");
@@ -36,12 +34,36 @@ fn main() {
     info!("  5. repeat from 1.");
     info!("");
 
-    let mut sec = 0u64;
-    loop {
-        let records_at =workload.records_per_sec_at(sec);
-        println!("{sec} sec => {records_at} rec/sec");
+    // // let bootstrap_servers = "";
+    // // let topic = "";
+    // //
+    // // Create the `FutureProducer` to produce asynchronously.
+    // let producer: FutureProducer = ClientConfig::new()
+    //     .set("bootstrap.servers", bootstrap_servers)
+    //     .set("message.timeout.ms", "5000")
+    //     .create()
+    //     .expect("Producer creation error");
+    // //
+    // let produce_future =
+    //     producer.send(FutureRecord::to(topic).key("some key").payload(""), Timeout::Never);
 
-        thread::sleep(time::Duration::from_secs(1));
+    let mut sec = 0u64;
+    let mut interval = time::interval(time::Duration::from_secs(1));
+    loop {
+        // Figure out how many records we need to produce in this second
+        let records_at = workload.records_per_sec_at(sec);
+        debug!("At {sec}s will produce {records_at}recs");
+
+        // TODO Prepare records: iterate over a generator of some kind?
+        // TODO Accumulate calls to `producer.send()`, resulting in a collection of Futures
+
+        // Await next cycle: we do the awaiting at this stage, so that we can start producing
+        // for this second as soon as possible, instead of using some of that time to produce the
+        // records.
+        interval.tick().await;
+
+        // TODO Produce records
+        info!("{sec} sec => {records_at} rec");
         sec += 1;
     }
 }

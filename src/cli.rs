@@ -50,11 +50,7 @@ impl Cli {
         // Validate values provided for `min` and `max`
         if cli.min >= cli.max {
             let mut cmd = Cli::command();
-            cmd.error(
-                ErrorKind::InvalidValue,
-                "Argument 'min' must be less than 'max'",
-            )
-            .exit();
+            cmd.error(ErrorKind::InvalidValue, "Argument 'min' must be less than 'max'").exit();
         }
 
         // Validate `(up|down)` transition in respect to their `(up|down)_sec` value
@@ -78,11 +74,7 @@ impl Cli {
         // Validate that non-zero values are assigned to `min_sec` and `max_sec`
         if cli.min_sec == 0 || cli.max_sec == 0 {
             let mut cmd = Cli::command();
-            cmd.error(
-                ErrorKind::InvalidValue,
-                "Arguments 'min/max' must be greater than 0",
-            )
-            .exit();
+            cmd.error(ErrorKind::InvalidValue, "Arguments 'min/max' must be greater than 0").exit();
         }
 
         cli

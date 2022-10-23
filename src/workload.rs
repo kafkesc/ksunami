@@ -78,14 +78,7 @@ impl Workload {
 
         // "up" phase duration and curve, depend on the corresponding Transition
         let (up_sec, up_curve) = if up_transition != Transition::None {
-            (
-                up_sec,
-                Some(bezier::Curve::from_points(
-                    up_p0,
-                    up_transition.ctrl_pts_up(up_p0, up_p3).unwrap(),
-                    up_p3,
-                )),
-            )
+            (up_sec, Some(bezier::Curve::from_points(up_p0, up_transition.ctrl_pts_up(up_p0, up_p3).unwrap(), up_p3)))
         } else {
             (0, None)
         };
@@ -195,21 +188,14 @@ impl Workload {
 #[cfg(test)]
 mod tests {
     use std::collections::HashMap;
+
     use crate::workload::WorkloadPhase::*;
+
     use super::*;
 
     #[test]
     fn test_up_linear_down_none() {
-        let w = Workload::new(
-            1,
-            20,
-            100,
-            5,
-            Transition::Linear,
-            3,
-            Transition::None,
-            0
-        );
+        let w = Workload::new(1, 20, 100, 5, Transition::Linear, 3, Transition::None, 0);
 
         // min_sec=20 + up_sec=3 + max_sec=5 + down_sec=0
         assert_eq!(28, w.overall_duration_sec());
@@ -247,16 +233,7 @@ mod tests {
 
     #[test]
     fn test_up_spike_out_down_ease_in() {
-        let w = Workload::new(
-            3,
-            60,
-            100,
-            5,
-            Transition::SpikeOut,
-            20,
-            Transition::EaseIn,
-            20
-        );
+        let w = Workload::new(3, 60, 100, 5, Transition::SpikeOut, 20, Transition::EaseIn, 20);
 
         let mut occurrences = HashMap::new();
 
