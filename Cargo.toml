@@ -13,3 +13,7 @@ flo_curves = "0.6.1"
 clap = { version = "4.0.14", features = ["derive", "deprecated", "env", "wrap_help"] }
 log = "0.4.17"
 env_logger = "0.9.1"
+rdkafka = { version = "0.28.0", features = ["ssl-vendored", "gssapi-vendored", "libz-static", "zstd"] }
+tokio = { version = "1", features = ["full"] }
+rand = "0.8.5"
+futures = "0.3.25"
