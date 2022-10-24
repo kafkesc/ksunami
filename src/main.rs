@@ -16,15 +16,16 @@ mod workload;
 
 #[tokio::main]
 async fn main() {
-    logging::init();
-
+    // Parse command line input and initialize logging
     let cli = Cli::parse_and_validate();
+    logging::init(cli.verbose);
     trace!("CLI input: {:?}", cli);
 
+    // Configure workload
     let workload =
         Workload::new(cli.min, cli.min_sec, cli.max, cli.max_sec, cli.up, cli.up_sec, cli.down, cli.down_sec);
-    trace!("Workload created: {:?}", workload);
 
+    // Log the production that Ksunami intends to do
     info!("");
     info!("Records production will follow this schedule:");
     info!("  1. {} rec/sec for {} seconds", cli.min, cli.min_sec);

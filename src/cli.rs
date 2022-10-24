@@ -27,7 +27,7 @@ pub struct Cli {
     pub up: Transition,
 
     /// Ramp-up transition duration
-    #[arg(long = "up-sec", value_name = "SECONDS")]
+    #[arg(long = "up-sec", default_value_t = 10, value_name = "SECONDS")]
     pub up_sec: u32,
 
     /// Ramp-down transition from maximum to minimum records/sec
@@ -35,12 +35,12 @@ pub struct Cli {
     pub down: Transition,
 
     /// Ramp-down transition duration
-    #[arg(long = "down-sec", value_name = "SECONDS")]
+    #[arg(long = "down-sec", default_value_t = 10, value_name = "SECONDS")]
     pub down_sec: u32,
 
-    /// Verbosity level
+    /// Verbosity level; Can also use env var `KSUNAMI_LOG=(ERROR|WARN|INFO|DEBUG|TRACE|OFF)`
     #[arg(short,long, action = clap::ArgAction::Count)]
-    verbose: u8,
+    pub verbose: u8,
 }
 
 impl Cli {
