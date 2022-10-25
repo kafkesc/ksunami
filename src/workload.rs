@@ -97,7 +97,7 @@ impl Workload {
             (0, None)
         };
 
-        let w = Workload {
+        Workload {
             min,
             min_sec,
             max,
@@ -106,10 +106,7 @@ impl Workload {
             up_curve,
             down_sec,
             down_curve,
-        };
-
-        trace!("Created: {:?}", w);
-        w
+        }
     }
 
     /// How long the [`WorkloadPhase::Min`] lasts, in seconds

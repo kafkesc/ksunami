@@ -13,17 +13,19 @@ mod generator;
 mod logging;
 mod transition;
 mod workload;
+mod rdkafka;
 
 #[tokio::main]
 async fn main() {
     // Parse command line input and initialize logging
     let cli = Cli::parse_and_validate();
-    logging::init(cli.verbose);
-    trace!("CLI input: {:?}", cli);
+    logging::init(cli.verbosity_level());
+    trace!("Created:\n{:#?}", cli);
 
     // Configure workload
     let workload =
         Workload::new(cli.min, cli.min_sec, cli.max, cli.max_sec, cli.up, cli.up_sec, cli.down, cli.down_sec);
+    trace!("Created:\n{:#?}", workload);
 
     // Log the production that Ksunami intends to do
     info!("");
@@ -45,8 +47,7 @@ async fn main() {
     //     .create()
     //     .expect("Producer creation error");
     // //
-    // let produce_future =
-    //     producer.send(FutureRecord::to(topic).key("some key").payload(""), Timeout::Never);
+    // FutureRecord::to(topic).key("some key").payload("").partition();
 
     let mut sec = 0u64;
     let mut interval = time::interval(time::Duration::from_secs(1));
