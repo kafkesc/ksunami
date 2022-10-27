@@ -4,7 +4,7 @@ version = "0.1.0"
 edition = "2021"
 authors = ["Ivan De Marino <detronizator@gmail.com>", "Kafkesc <https://github.com/kafkesc>"]
 repository = "https://github.com/kafkesc/ksunami"
-description = "Continuosly Produce a wave of Kafka Records."
+description = "Continuosly Produce waves of Kafka Records."
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
