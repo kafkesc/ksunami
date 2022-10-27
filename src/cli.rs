@@ -17,7 +17,7 @@ pub struct Cli {
     // ---------------------------------------------------------------------- Producer configuration
     /// Initial Kafka Brokers to connect to (format: 'HOST:PORT,...').
     ///
-    /// Equivalent to '--config=bootstrap.brokers:host:port,...'.
+    /// Equivalent to '--config=bootstrap.servers:host:port,...'.
     #[arg(short, long = "brokers", value_name = "BOOTSTRAP_BROKERS")]
     pub bootstrap_brokers: String,
 
@@ -25,7 +25,7 @@ pub struct Cli {
     ///
     /// Equivalent to '--config=client.id:my-client-id'.
     #[arg(long = "client-id", value_name = "CLIENT_ID", default_value = env!("CARGO_PKG_NAME"))]
-    pub client_id: Option<String>,
+    pub client_id: String,
 
     /// Partitioner used by the internal Kafka Producer.
     ///
