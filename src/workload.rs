@@ -19,7 +19,7 @@ use crate::transition::Transition;
 /// Given the input at construction time, the workload repeats over and over, with a period
 /// equivalent to the sum of `min_sec + max_sec + up_sec + down_sec`: this means that
 /// after the [`WorkloadPhase::Down`], the [`WorkloadPhase::Min`] starts again.
-#[derive(Debug, Copy, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Workload {
     /// Minimum amount of records per second
     min: u32,
