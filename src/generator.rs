@@ -5,6 +5,8 @@ use std::path::PathBuf;
 
 use rand::distributions::{Alphanumeric, DistString};
 use rand::{thread_rng, Rng};
+use rdkafka::message::OwnedHeaders;
+use rdkafka::producer::FutureRecord;
 
 /// Helps to generate a possible value used in [`RecordGenerator`].
 ///
@@ -159,11 +161,43 @@ impl ValueGenerator {
 /// as this is the most basic form of data we can give to the Kafka Producer.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct GeneratedRecord {
-    topic: String,
-    key: Option<Vec<u8>>,
-    payload: Option<Vec<u8>>,
-    partition: Option<i32>,
-    headers: HashMap<String, String>,
+    pub topic: String,
+    pub key: Option<Vec<u8>>,
+    pub payload: Option<Vec<u8>>,
+    pub partition: Option<i32>,
+    pub headers: HashMap<String, String>,
+}
+
+impl GeneratedRecord {
+    /// Converts the `GeneratedRecord` into a [`rdkafka::producer::FutureRecord`], usable with [`rdkafka::producer::FutureProducer`].
+    pub fn as_future_record(&self) -> FutureRecord<Vec<u8>, Vec<u8>> {
+        let mut rec: FutureRecord<Vec<u8>, Vec<u8>> = FutureRecord::to(self.topic.as_str());
+
+        // Set record key (if available)
+        rec.key = if let Some(k) = &self.key {
+            Some(k)
+        } else {
+            None
+        };
+
+        // Set record payload (if available)
+        rec.payload = if let Some(p) = &self.payload {
+            Some(p)
+        } else {
+            None
+        };
+
+        // Set partition
+        rec.partition = self.partition;
+
+        // Set headers
+        let mut rec_headers = OwnedHeaders::new();
+        for (k, v) in &self.headers {
+            rec_headers = rec_headers.add(k.as_str(), v.as_str());
+        }
+        rec.headers = Some(rec_headers);
+        rec
+    }
 }
 
 /// Utility to generate records.
@@ -211,7 +245,7 @@ impl RecordGenerator {
         self.headers.insert(k, v);
     }
 
-    pub fn set_key_field(&mut self, key_generator: ValueGenerator) -> Result<(), Error> {
+    pub fn set_key_generator(&mut self, key_generator: ValueGenerator) -> Result<(), Error> {
         // Memoize content, if appropriate
         self.key_generated_content = match key_generator {
             ValueGenerator::Fixed(_) | ValueGenerator::File(_) => Some(key_generator.generate()?),
@@ -223,7 +257,7 @@ impl RecordGenerator {
         Ok(())
     }
 
-    pub fn set_payload_field(&mut self, payload_generator: ValueGenerator) -> Result<(), Error> {
+    pub fn set_payload_generator(&mut self, payload_generator: ValueGenerator) -> Result<(), Error> {
         // Memoize content, if appropriate
         self.payload_generated_content = match payload_generator {
             ValueGenerator::Fixed(_) | ValueGenerator::File(_) => Some(payload_generator.generate()?),
@@ -271,7 +305,7 @@ mod tests {
     #[test]
     fn test_payload_only() {
         let mut generator = RecordGenerator::new("a_topic_name".to_string());
-        assert!(generator.set_payload_field(ValueGenerator::Fixed("a payload content".to_string())).is_ok());
+        assert!(generator.set_payload_generator(ValueGenerator::Fixed("a payload content".to_string())).is_ok());
 
         let rec = generator.generate_record().unwrap();
         assert_eq!("a_topic_name", rec.topic);
@@ -288,13 +322,13 @@ mod tests {
     #[test]
     fn test_key_and_headers() {
         let mut generator = RecordGenerator::new("another_topic".to_string());
-        assert!(generator.set_payload_field(ValueGenerator::Fixed("another payload".to_string())).is_ok());
+        assert!(generator.set_payload_generator(ValueGenerator::Fixed("another payload".to_string())).is_ok());
 
         generator.add_record_header("k1".to_string(), "v1".to_string());
         generator.add_record_header("k2".to_string(), "v2".to_string());
         generator.add_record_header("k3".to_string(), "v3".to_string());
 
-        assert!(generator.set_key_field(ValueGenerator::RandInt(10, 10)).is_ok());
+        assert!(generator.set_key_generator(ValueGenerator::RandInt(10, 10)).is_ok());
 
         let rec = generator.generate_record().unwrap();
         assert_eq!("another_topic", rec.topic);
@@ -313,7 +347,7 @@ mod tests {
     fn test_file_payload() {
         let cargo_toml_path = PathBuf::from("./Cargo.toml");
         let mut generator = RecordGenerator::new("topic_zzz".to_string());
-        assert!(generator.set_payload_field(ValueGenerator::File(cargo_toml_path.clone())).is_ok());
+        assert!(generator.set_payload_generator(ValueGenerator::File(cargo_toml_path.clone())).is_ok());
 
         let rec = generator.generate_record().unwrap();
         assert_eq!("topic_zzz", rec.topic);
@@ -330,15 +364,15 @@ mod tests {
     #[test]
     fn test_randomizers() {
         let mut generator = RecordGenerator::new("topic".to_string());
-        assert!(generator.set_key_field(ValueGenerator::RandBytes(20)).is_ok());
-        assert!(generator.set_payload_field(ValueGenerator::RandAlphaNum(20)).is_ok());
+        assert!(generator.set_key_generator(ValueGenerator::RandBytes(20)).is_ok());
+        assert!(generator.set_payload_generator(ValueGenerator::RandAlphaNum(20)).is_ok());
 
         let rec = generator.generate_record().unwrap();
         assert_eq!(20, rec.key.unwrap().len());
         assert!(std::str::from_utf8(rec.payload.unwrap().as_slice()).is_ok());
 
-        assert!(generator.set_payload_field(ValueGenerator::RandInt(123, 125)).is_ok());
-        assert!(generator.set_key_field(ValueGenerator::RandFloat(1.5, 2.0)).is_ok());
+        assert!(generator.set_payload_generator(ValueGenerator::RandInt(123, 125)).is_ok());
+        assert!(generator.set_key_generator(ValueGenerator::RandFloat(1.5, 2.0)).is_ok());
 
         let rec = generator.generate_record().unwrap();
         let rec_key = f64::from_be_bytes(rec.key.unwrap().as_slice().try_into().unwrap());
