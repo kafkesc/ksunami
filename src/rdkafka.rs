@@ -29,3 +29,17 @@ pub enum PartitionerConfig {
     /// FNV-1a hash of key (NULL keys are randomly partitioned).
     Fnv1aRandom,
 }
+
+impl PartitionerConfig {
+    pub fn name(&self) -> String {
+        match self {
+            PartitionerConfig::Random => "random".to_string(),
+            PartitionerConfig::Consistent => "consistent".to_string(),
+            PartitionerConfig::ConsistentRandom => "consistent_random".to_string(),
+            PartitionerConfig::Murmur2 => "murmur2".to_string(),
+            PartitionerConfig::Murmur2Random => "murmur2_random".to_string(),
+            PartitionerConfig::Fnv1a => "fnv1a".to_string(),
+            PartitionerConfig::Fnv1aRandom => "fnv1a_random".to_string(),
+        }
+    }
+}
