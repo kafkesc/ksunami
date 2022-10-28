@@ -1,7 +1,7 @@
 # Kafkesc - Ksunami
 
-<p align="center" >
-    _**Continuously produce waves of Kafka Records.**_
+<p align="center">
+    Continuously produce waves of Kafka Records.
 </p>
 
 ## Features
