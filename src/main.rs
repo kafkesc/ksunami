@@ -35,7 +35,7 @@ async fn main() -> Result<(), Box<dyn Error>> {
     let producer_config = build_producer_config(&cli);
 
     let (records_tx, records_rx) = build_records_channel(cli.max as usize);
-    let shutdown_rx = setup_shutdown_signal_handler();
+    let shutdown_rx = build_shutdown_channel();
 
     // Create a "tap" of records, based on the workload and generator we just built
     let mut records_tap = RecordsTap::new(workload, generator);
@@ -121,7 +121,7 @@ fn build_records_channel(depth: usize) -> (mpsc::Sender<GeneratedRecord>, mpsc::
     mpsc::channel::<GeneratedRecord>(depth)
 }
 
-fn setup_shutdown_signal_handler() -> broadcast::Receiver<()> {
+fn build_shutdown_channel() -> broadcast::Receiver<()> {
     let (sender, receiver) = broadcast::channel(1);
 
     // Setup shutdown signal handler:
@@ -135,5 +135,6 @@ fn setup_shutdown_signal_handler() -> broadcast::Receiver<()> {
         error!("Failed to register signal handler: {e}");
     }
 
+    // Return a receiver to we can notify other parts of the system.
     receiver
 }
