@@ -1,5 +1,5 @@
 use clap::error::ErrorKind;
-pub use clap::{value_parser, CommandFactory, Parser, ArgGroup};
+pub use clap::{value_parser, ArgGroup, CommandFactory, Parser};
 
 use crate::generator::ValueGenerator;
 use crate::rdkafka::PartitionerConfig;
@@ -183,8 +183,10 @@ impl Cli {
     }
 }
 
+/// A simple (key,value) pair of `String`s, useful to be parsed from arguments via [`kv_clap_value_parser`].
 pub type KVPair = (String, String);
 
+/// To be used as [`clap::value_parser`] function to create [`KVPair`] values.
 fn kv_clap_value_parser(kv: &str) -> Result<KVPair, String> {
     let (k, v) = match kv.split_once(':') {
         None => {
