@@ -1,7 +1,7 @@
 # Kafkesc - Ksunami
 
 <p align="center">
-    Continuously produce waves of Kafka Records.
+    :ocean: Continuously produce waves of Kafka Records :ocean:
 </p>
 
 ## Features
