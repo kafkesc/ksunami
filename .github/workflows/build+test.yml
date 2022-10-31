@@ -14,6 +14,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+    - name: Build dependencies
+      run: sudo apt install -y libsasl2-dev
     - uses: actions/checkout@v3
     - name: Build
       run: cargo build --verbose
