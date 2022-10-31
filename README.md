@@ -1,8 +1,8 @@
-# Kafkesc - Ksunami
+# Kafkesc - Ksunami :ocean:
 
-<p align="center">
-    :ocean: Continuously produce waves of Kafka Records :ocean:
-</p>
+_**Waves of Kafka Records!**_
+
+[![Build + Test](https://github.com/kafkesc/ksunami/actions/workflows/build+test.yml/badge.svg)](https://github.com/kafkesc/ksunami/actions/workflows/build+test.yml)
 
 ## Features
 
