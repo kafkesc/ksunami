@@ -1,4 +1,4 @@
-# Kafkesc - Ksunami :ocean:
+# :ocean: Kafkesc - Ksunami :ocean:
 
 _**Waves of Kafka Records!**_
 
