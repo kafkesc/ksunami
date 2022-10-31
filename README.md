@@ -22,8 +22,10 @@ that repeat indefinitely.
 * Records `key` and `payload` are configurable with fixed, from-file and randomly-generated values
 * Records headers can be added to each record
 * Kafka producer is fully configurable, including selecting a partitioner
+* Built on top of the awesome [librdkafka](https://github.com/edenhill/librdkafka) :heart:,
+  thanks to the Rust binding [rdkafka](https://crates.io/crates/rdkafka) :heart_eyes:
 
-## Get started
+## :horse: Get started
 
 ### Cargo install
 
@@ -33,7 +35,7 @@ TODO
 
 TODO
 
-## Core concepts
+## :dragon: Core concepts
 
 ### :traffic_light: The 4 phases
 
@@ -43,7 +45,7 @@ TODO
 
 TODO
 
-## Usage
+## :racehorse: Usage
 
 To begin, start with `ksunami -h` or `ksunami --help` for the short and long versions of the usage instructions.
 _Go ahead, I'll wait!_.
@@ -131,11 +133,11 @@ and so logging can be configured and fine-tuned using the Environment Variable `
 Please take a look at [env_logger doc](https://docs.rs/env_logger/latest/env_logger/#enabling-logging) for
 more details.
 
-## Examples
+## :rainbow: Examples
 
 TODO
 
-## TODOs
+## :pushpin: TODOs
 
 * [ ] Support for jitter in the size of keys/payload
 * [ ] Support for jitter in the number of records per phase
@@ -146,6 +148,6 @@ TODO
 * [ ] Publish a binary for Linux/macOS/Windows x AMD64/ARM64
 * [ ] Publish a build via Homebrew
 
-## License
+## :four_leaf_clover: License
 
 [Apache License 2.0](./LICENSE)
