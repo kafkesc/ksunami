@@ -56,7 +56,7 @@ pub struct Cli {
     /// * 'alpha:LENGTH': LENGTH is the length of a random alphanumeric string
     /// * 'bytes:LENGTH': LENGTH is the length of a random bytes array
     /// * 'int:MIN-MAX': MIN and MAX are limits of an inclusive range from which an integer number is picked
-    /// * 'float:MIN-MAX': MIN and MAX are limits of an inclusive range from which an float number is picked
+    /// * 'float:MIN-MAX': MIN and MAX are limits of an inclusive range from which a float number is picked
     #[arg(short, long, value_name = "KEY_TYPE:INPUT", value_parser = ValueGenerator::clap_parser, verbatim_doc_comment)]
     pub key: Option<ValueGenerator>,
 
@@ -69,7 +69,7 @@ pub struct Cli {
     /// * 'alpha:LENGTH': LENGTH is the length of a random alphanumeric string
     /// * 'bytes:LENGTH': LENGTH is the length of a random bytes array
     /// * 'int:MIN-MAX': MIN and MAX are limits of an inclusive range from which an integer number is picked
-    /// * 'float:MIN-MAX': MIN and MAX are limits of an inclusive range from which an float number is picked
+    /// * 'float:MIN-MAX': MIN and MAX are limits of an inclusive range from which a float number is picked
     #[arg(short, long, value_name = "PAYLOAD_TYPE:INPUT", value_parser = ValueGenerator::clap_parser, verbatim_doc_comment)]
     pub payload: Option<ValueGenerator>,
 
