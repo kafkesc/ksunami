@@ -31,6 +31,7 @@ pub enum PartitionerConfig {
 }
 
 impl PartitionerConfig {
+    /// Returns the "name" for the enum value, as recognised by `librdkafka`.
     pub fn name(&self) -> String {
         match self {
             PartitionerConfig::Random => "random".to_string(),
@@ -41,5 +42,11 @@ impl PartitionerConfig {
             PartitionerConfig::Fnv1a => "fnv1a".to_string(),
             PartitionerConfig::Fnv1aRandom => "fnv1a_random".to_string(),
         }
+    }
+}
+
+impl Default for PartitionerConfig {
+    fn default() -> Self {
+        PartitionerConfig::ConsistentRandom
     }
 }
