@@ -4,48 +4,54 @@ _**Waves of Kafka Records!**_
 
 [![Build + Test](https://github.com/kafkesc/ksunami/actions/workflows/build+test.yml/badge.svg)](https://github.com/kafkesc/ksunami/actions/workflows/build+test.yml)
 
-## Why?
+## :grey_question: Why?
 
 Ksunami is a command line tool to produce volumes of (dummy) records against a [Kafka](https://kafka.apache.org/) cluster.
 
-If you are experimenting with scalability and latency against your Kafka consumer applications, and are looking
-for ways to reproduce uneven, _exceptional_ traffic patterns (i.e. _"spikes"_).
+If you are experimenting with scalability and latency against Kafka, and are looking for ways to reproduce a continues
+flow of records, following a very specific traffic pattern that repeats periodically, **Ksunami** is the tool for you.
 
-For example, imagine your cluster normally receives a steady, stable amount of traffic
-(ex. 1,000 records/sec, equivalent to ~1MB/sec); but once a week you receive a spike that peaks at
-100,000 records/sec (~102MB/sec). **How can you reproduce such a scenario on demand, so you can improve your system?**
+Ksunami offers a way to set up the production of records, expressing the scenario as a sequence of "phases"
+that repeat indefinitely.
 
-Ksunami offers a way to setup the production of records, expressing the scenario as a sequence of "phases"
-that repeat continuously until the process is interrupted. 
+## :bulb: Features
 
-## Features
-
-* Production described in 4 "phases": `min`, `up`, `max` and `down`
-* All phases are configurable in terms of _seconds_ (duration) and _records per second_ 
-* `up` and `down` transitions are also configured as curves (ex. `linear`, `ease-in`, `spike-out`, ...)
-* Records key and payload are configurable, with fixed, from-file and randomly-generated values
+* Production described in 4 "phases" that repeat in circle: `min`, `up`, `max` and `down`
+* All phases are configurable in terms of _seconds_ (duration) and _records per second_ (workload) 
+* `up` and `down` can be one of many transitions, each with a specific "shape" (ex. `linear`, `ease-in`, `spike-out`, ...)
+* Records `key` and `payload` are configurable with fixed, from-file and randomly-generated values
 * Records headers can be added to each record
-* Fully configurable Kafka producer, including the partitioner
+* Kafka producer is fully configurable, including selecting a partitioner
 
-## Install
+## Get started
+
+### Cargo install
+
+TODO
+
+### Manually
+
+TODO
 
 ## Core concepts
 
 ### :traffic_light: The 4 phases
 
+TODO
+
 ### :roller_coaster: Transitions
 
-### Key and Payload content
+TODO
 
 ## Usage
 
-To begin, start with `ksunami -h` or `ksunami --help` for the short and long versions of the usage instructions:
-go ahead, I'll wait.
+To begin, start with `ksunami -h` or `ksunami --help` for the short and long versions of the usage instructions.
+_Go ahead, I'll wait!_.
 
 ### :wrench: Configuring the Producer
 
-Additional to the obvious `-b,--brokers` for the bootstrap brokers, and `--client-id` for the client identifier,
-it's possible to fine tune the Provider via `--partitioner` and `-c,--config`.
+Additional to the obvious `-b, --brokers` for the bootstrap brokers, and `--client-id` for the client identifier,
+it's possible to fine tune the Provider via `--partitioner` and `-c, --config`.
 
 Possible values for the `--partitioner` argument are:
 
@@ -64,7 +70,8 @@ For example, to use a _purely random partitioner_:
 $ ksunami ... --partitioner random ...
 ```
 
-As per `-c,--config`, all the values supported by producers of the [librdkafka](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md)
+As per `-c,--config`, all the values supported by producers of the
+[librdkafka](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md)
 library are supported, as Ksunami is based on it.
 
 For example, to set a _200ms producer lingering_ and to _limit the number of producer send retries to 5_:
@@ -75,11 +82,58 @@ $ ksunami ... -c linger.ms:200 ... --config message.send.max.retries:5 ...
 
 ### :factory: What goes into each Record
 
+You can configure the content of each record produced by Ksunami:
+
+* `-t, --topic <TOPIC>`: the destination topic to send the record to
+* `-k, --key <KEY_TYPE:INPUT>` (optional): the key of the record
+* `-p, --payload <PAYLOAD_TYPE:INPUT>` (optional): the payload of the record
+* `--partition <PARTITION>` (optional): the specific partition inside the destination topic
+* `--head <HEAD_KEY:HEAD_VAL>` (optional): one (or more) header(s) to decorate the record with
+
+While for `--topic`, `--partition` and `--head` the input is pretty self-explanatory, `--key` and `--payload` support
+a richer set of options.
+
+The supported `KEY_TYPE/PAYLOAD_TYPE` are:
+
+* `string:STR`: `STR` is a plain string
+* `file:PATH`: `PATH` is a path to an existing file
+* `alpha:LENGTH`: `LENGTH` is the length of a random alphanumeric string
+* `bytes:LENGTH`: `LENGTH` is the length of a random bytes array
+* `int:MIN-MAX`: `MIN` and `MAX` are limits of an inclusive range from which an integer number is picked
+* `float:MIN-MAX`: `MIN` and `MAX` are limits of an inclusive range from which a float number is picked
+
+This allows to have a degree of flexibility to the content that is placed inside records.
+
+For example, to produce records where the _key is an integer between 1 and 1000_
+and the _payload is a random sequence of 100 bytes_:
+
+```shell
+$ ksunami ... --key int:1-1000 --payload bytes:100 
+```
+
 ### :chart_with_upwards_trend: How many Records
+
+TODO
 
 ### :microphone: Log verbosity
 
+Ksunami follows the long tradition of `-v/-q` to control the verbosity of it's logging:
+
+* `-qq...  = OFF`
+* `-q...   = ERROR`
+* `<none>  = WARN`
+* `-v      = INFO`
+* `-vv     = DEBUG`
+* `-vvv... = TRACE`
+
+It uses [log](https://crates.io/crates/log) and [env_logger](https://crates.io/crates/env_logger),
+and so logging can be configured and fine-tuned using the Environment Variable `KSUNAMI_LOG`.
+Please take a look at [env_logger doc](https://docs.rs/env_logger/latest/env_logger/#enabling-logging) for
+more details.
+
 ## Examples
+
+TODO
 
 ## TODOs
 
@@ -89,6 +143,8 @@ $ ksunami ... -c linger.ms:200 ... --config message.send.max.retries:5 ...
 * [ ] Surface "producer ack" config (?)
 * [ ] Surface "compression" config (?)
 * [ ] Support for sequential values for keys/payload (seq of ints? seq of strings? closed sequence? random amongst a set?)
+* [ ] Publish a binary for Linux/macOS/Windows x AMD64/ARM64
+* [ ] Publish a build via Homebrew
 
 ## License
 
