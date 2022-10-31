@@ -39,7 +39,39 @@ that repeat continuously until the process is interrupted.
 
 ## Usage
 
+To begin, start with `ksunami -h` or `ksunami --help` for the short and long versions of the usage instructions:
+go ahead, I'll wait.
+
 ### Tuning the Producer
+
+Additional to the obvious `-b,--brokers` for the bootstrap brokers, and `--client-id` for the client identifier,
+it's possible to fine tune the Provider via `--partitioner` and `-c,--config`.
+
+Possible values for the `--partitioner` argument are:
+
+* `random`: Random distribution
+* `consistent`: CRC32 hash of key (Empty and NULL keys are mapped to single partition)
+* `consistent_random` (default): CRC32 hash of key (Empty and NULL keys are randomly partitioned)
+* `murmur2`: Java Producer compatible Murmur2 hash of key (NULL keys are mapped to single partition)
+* `murmur2_random`: Java Producer compatible Murmur2 hash of key (NULL keys are randomly partitioned). 
+  This is functionally equivalent to the default partitioner in the Java Producer
+* `fnv1a`: FNV-1a hash of key (NULL keys are mapped to single partition)
+* `fnv1a_random`: FNV-1a hash of key (NULL keys are randomly partitioned)
+
+For example, to use a _purely random partitioner_:
+
+```shell
+$ ksunami ... --partitioner random...
+```
+
+As per `-c,--config`, all the values supported by producers of the [librdkafka](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md)
+library are supported, as Ksunami is based on it.
+
+For example, to set a _200ms producer lingering_ and to _limit the number of producer send retries to 5_:
+
+```shell
+$ ksunami ... -c linger.ms:200 ... --config message.send.max.retries:5 ...
+```
 
 ### What goes into each Record
 
