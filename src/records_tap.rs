@@ -1,17 +1,23 @@
-use tokio::sync::mpsc;
+use std::time::Duration;
+
+use log::Level::Warn;
 use tokio::sync::broadcast;
+use tokio::sync::mpsc;
 use tokio::task::JoinHandle;
 use tokio::time;
 
 use crate::{GeneratedRecord, RecordGenerator, Workload};
 
+/// Using a [`Workload`] and a [`RecordGenerator`], it generates records and sends them via a given channel.
+///
+/// This receives the [`mpsc::Sender`] part of the channel: the [`mpsc::Receiver`] part is
+/// assigned to a [`ProducerSink`].
 pub struct RecordsTap {
     workload: Workload,
     generator: RecordGenerator,
 }
 
 impl RecordsTap {
-
     pub fn new(workload: Workload, generator: RecordGenerator) -> RecordsTap {
         RecordsTap {
             workload,
@@ -19,7 +25,21 @@ impl RecordsTap {
         }
     }
 
-    pub fn spawn(&mut self, records_tx: mpsc::Sender<GeneratedRecord>, mut shutdown_rx: broadcast::Receiver<()>) -> JoinHandle<u64> {
+    /// Instantiates a record-producing loop as async [`tokio::task`].
+    ///
+    /// Once per second, it queries the internal [`Workload`] for how many records are supposed
+    /// to be produced in that instant, and then invokes the internal [`RecordGenerator`] an equal
+    /// amount of time. Each record is then sent to the "sink" via the given `records_tx` side of
+    /// a channel.
+    ///
+    /// Additionally, when a `()` is received over the `shutdown_rx` [`broadcast::Receiver`], it
+    /// initiates a shutdown: stops producing records and causes the the `records_tx` to be dropped.
+    /// This in turn causes the receiver to stop expecting records and shutdown as well.
+    pub fn spawn(
+        &mut self,
+        records_tx: mpsc::Sender<GeneratedRecord>,
+        mut shutdown_rx: broadcast::Receiver<()>,
+    ) -> JoinHandle<u64> {
         let workload = self.workload.clone();
         let generator = self.generator.clone();
 
@@ -34,14 +54,25 @@ impl RecordsTap {
             while !shutdown_requested {
                 // Figure out how many records we need to produce in this second
                 let records_at = workload.records_per_sec_at(sec);
-                info!("{sec} sec => {records_at} rec");
+                info!("{sec} sec: sending {records_at} recs...");
 
                 for _ in 0..records_at {
+                    // Wan if we have less then 20% capacity on the internal records channel
+                    let chan_cap = records_tx.capacity() as f64 / records_tx.max_capacity() as f64;
+                    if chan_cap < 0.2 && log_enabled!(Warn) {
+                        warn!(
+                            "Records channel capacity at {}% ({}/{})",
+                            chan_cap * 100f64,
+                            records_tx.capacity(),
+                            records_tx.max_capacity()
+                        );
+                    }
+
                     match generator.generate_record() {
                         Ok(gen_rec) => {
                             tokio::select! {
                                 // Send record to the sink (producer)
-                                send_res = records_tx.send(gen_rec) => {
+                                send_res = records_tx.send_timeout(gen_rec, Duration::from_millis(10)) => {
                                     if let Err(e) = send_res {
                                         error!("Failed to send record to producer: {e}");
                                     }
@@ -55,12 +86,11 @@ impl RecordsTap {
                                     shutdown_requested = true;
                                 },
                             }
-
-
                         }
                         Err(e) => error!("Failed to generate record: {e}"),
                     }
                 }
+                info!("{sec} sec: sent {records_at} recs");
 
                 // Await next cycle: we do the awaiting at this stage, so that we can start producing
                 // for this second as soon as possible, instead of using some of that time to produce the
@@ -73,5 +103,4 @@ impl RecordsTap {
             sec
         })
     }
-
 }

@@ -10,6 +10,9 @@ use tokio::task::JoinHandle;
 use crate::GeneratedRecord;
 
 /// A "sink" to feed all the records it receives to an [`FutureProducer`].
+///
+/// It's initialized by passing in the desired configuration of a Producer,
+/// and it then feeds every record to said producer, received through the call to [`spawn`].
 pub struct ProducerSink {
     producer: FutureProducer,
 }
