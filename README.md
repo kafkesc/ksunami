@@ -31,9 +31,9 @@ that repeat continuously until the process is interrupted.
 
 ## Core concepts
 
-### The 4 phases
+### :traffic_light: The 4 phases
 
-### Transitions
+### :roller_coaster: Transitions
 
 ### Key and Payload content
 
@@ -42,7 +42,7 @@ that repeat continuously until the process is interrupted.
 To begin, start with `ksunami -h` or `ksunami --help` for the short and long versions of the usage instructions:
 go ahead, I'll wait.
 
-### Tuning the Producer
+### :wrench: Configuring the Producer
 
 Additional to the obvious `-b,--brokers` for the bootstrap brokers, and `--client-id` for the client identifier,
 it's possible to fine tune the Provider via `--partitioner` and `-c,--config`.
@@ -61,7 +61,7 @@ Possible values for the `--partitioner` argument are:
 For example, to use a _purely random partitioner_:
 
 ```shell
-$ ksunami ... --partitioner random...
+$ ksunami ... --partitioner random ...
 ```
 
 As per `-c,--config`, all the values supported by producers of the [librdkafka](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md)
@@ -73,11 +73,11 @@ For example, to set a _200ms producer lingering_ and to _limit the number of pro
 $ ksunami ... -c linger.ms:200 ... --config message.send.max.retries:5 ...
 ```
 
-### What goes into each Record
+### :factory: What goes into each Record
 
-### How many Records
+### :chart_with_upwards_trend: How many Records
 
-### Log verbosity
+### :microphone: Log verbosity
 
 ## Examples
 
