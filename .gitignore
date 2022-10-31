@@ -4,6 +4,7 @@
 # rustfmt
 **/*.rs.bk
 
-# Jetbrains IDE
+# Jetbrains IDEs
 .idea/
 *.iws
+.fleet/
