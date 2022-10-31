@@ -30,7 +30,7 @@ pub struct Cli {
     /// Partitioner used by the internal Kafka Producer.
     ///
     /// Equivalent to '--config=partitioner:random'.
-    #[arg(long, value_name = "PARTITIONER", value_enum, default_value_t = PartitionerConfig::ConsistentRandom)]
+    #[arg(long, value_name = "PARTITIONER", value_enum, default_value_t = PartitionerConfig::default())]
     pub partitioner: PartitionerConfig,
 
     /// Additional configuration used by the internal Kafka Producer (format: 'CONF_KEY:CONF_VAL').
@@ -57,7 +57,7 @@ pub struct Cli {
     /// * 'bytes:LENGTH': LENGTH is the length of a random bytes array
     /// * 'int:MIN-MAX': MIN and MAX are limits of an inclusive range from which an integer number is picked
     /// * 'float:MIN-MAX': MIN and MAX are limits of an inclusive range from which an float number is picked
-    #[arg(short, long, value_name = "KEY_TYPE:INPUT", value_parser = ValueGenerator::clap_value_parser, verbatim_doc_comment)]
+    #[arg(short, long, value_name = "KEY_TYPE:INPUT", value_parser = ValueGenerator::clap_parser, verbatim_doc_comment)]
     pub key: Option<ValueGenerator>,
 
     /// Records Payload (format: 'PAYLOAD_TYPE:INPUT').
@@ -70,7 +70,7 @@ pub struct Cli {
     /// * 'bytes:LENGTH': LENGTH is the length of a random bytes array
     /// * 'int:MIN-MAX': MIN and MAX are limits of an inclusive range from which an integer number is picked
     /// * 'float:MIN-MAX': MIN and MAX are limits of an inclusive range from which an float number is picked
-    #[arg(short, long, value_name = "PAYLOAD_TYPE:INPUT", value_parser = ValueGenerator::clap_value_parser, verbatim_doc_comment)]
+    #[arg(short, long, value_name = "PAYLOAD_TYPE:INPUT", value_parser = ValueGenerator::clap_parser, verbatim_doc_comment)]
     pub payload: Option<ValueGenerator>,
 
     /// Destination Topic Partition.

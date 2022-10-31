@@ -16,7 +16,7 @@ use rdkafka::producer::FutureRecord;
 #[derive(Debug, Clone, PartialEq, PartialOrd)]
 pub enum ValueGenerator {
     /// A user provided string.
-    Fixed(String),
+    String(String),
 
     /// The content of a file.
     File(PathBuf),
@@ -38,7 +38,7 @@ impl ValueGenerator {
     /// Generates a `Vec<u8>` of bytes containing the value created by this generator, or an error.
     fn generate(&self) -> Result<Vec<u8>, Error> {
         match self {
-            ValueGenerator::Fixed(s) => Ok(s.as_bytes().to_vec()),
+            ValueGenerator::String(s) => Ok(s.as_bytes().to_vec()),
             ValueGenerator::File(bp) => {
                 debug!("Loading content of file {:?}", bp);
                 let mut f = File::open(bp)?;
@@ -83,7 +83,7 @@ impl ValueGenerator {
     ///
     /// In case of error, it returns a `String` that [`clap`] adds to the error message returned to the user.
     ///
-    pub fn clap_value_parser(val_gen_as_str: &str) -> Result<ValueGenerator, String> {
+    pub fn clap_parser(val_gen_as_str: &str) -> Result<ValueGenerator, String> {
         let (val_gen_type, val_gen_input) = match val_gen_as_str.split_once(':') {
             None => {
                 return Err("Should have 'TYPE:INPUT' format".to_string());
@@ -92,7 +92,7 @@ impl ValueGenerator {
         };
 
         match val_gen_type {
-            "string" => Ok(ValueGenerator::Fixed(val_gen_input.to_string())),
+            "string" => Ok(ValueGenerator::String(val_gen_input.to_string())),
             "file" => {
                 let path = PathBuf::from(val_gen_input);
 
@@ -248,7 +248,7 @@ impl RecordGenerator {
     pub fn set_key_generator(&mut self, key_generator: ValueGenerator) -> Result<(), Error> {
         // Memoize content, if appropriate
         self.key_generated_content = match key_generator {
-            ValueGenerator::Fixed(_) | ValueGenerator::File(_) => Some(key_generator.generate()?),
+            ValueGenerator::String(_) | ValueGenerator::File(_) => Some(key_generator.generate()?),
             _ => None,
         };
 
@@ -260,7 +260,7 @@ impl RecordGenerator {
     pub fn set_payload_generator(&mut self, payload_generator: ValueGenerator) -> Result<(), Error> {
         // Memoize content, if appropriate
         self.payload_generated_content = match payload_generator {
-            ValueGenerator::Fixed(_) | ValueGenerator::File(_) => Some(payload_generator.generate()?),
+            ValueGenerator::String(_) | ValueGenerator::File(_) => Some(payload_generator.generate()?),
             _ => None,
         };
 
@@ -300,29 +300,42 @@ impl RecordGenerator {
 
 #[cfg(test)]
 mod tests {
+    use rdkafka::message::Headers;
+
     use super::*;
 
     #[test]
     fn test_payload_only() {
         let mut generator = RecordGenerator::new("a_topic_name".to_string());
-        assert!(generator.set_payload_generator(ValueGenerator::Fixed("a payload content".to_string())).is_ok());
+        assert!(generator.set_payload_generator(ValueGenerator::String("a payload content".to_string())).is_ok());
 
         let rec = generator.generate_record().unwrap();
         assert_eq!("a_topic_name", rec.topic);
         assert_eq!(None, rec.key);
-        assert_eq!("a payload content".as_bytes(), rec.payload.unwrap());
+        assert_eq!("a payload content".as_bytes(), rec.payload.clone().unwrap());
         assert!(rec.headers.is_empty());
         assert_eq!(None, rec.partition);
+
+        let fut_rec = rec.as_future_record();
+        assert_eq!("a_topic_name", fut_rec.topic);
+        assert!(fut_rec.key.is_none());
+        assert!(fut_rec.payload.is_some());
+        assert!(fut_rec.partition.is_none());
+        assert!(fut_rec.headers.is_some());
+        assert_eq!(0, fut_rec.headers.unwrap().count());
 
         generator.set_destination_partition(10);
         let rec = generator.generate_record().unwrap();
         assert_eq!(Some(10), rec.partition);
+
+        let fut_rec = rec.as_future_record();
+        assert_eq!(Some(10), fut_rec.partition);
     }
 
     #[test]
     fn test_key_and_headers() {
         let mut generator = RecordGenerator::new("another_topic".to_string());
-        assert!(generator.set_payload_generator(ValueGenerator::Fixed("another payload".to_string())).is_ok());
+        assert!(generator.set_payload_generator(ValueGenerator::String("another payload".to_string())).is_ok());
 
         generator.add_record_header("k1".to_string(), "v1".to_string());
         generator.add_record_header("k2".to_string(), "v2".to_string());
@@ -332,8 +345,8 @@ mod tests {
 
         let rec = generator.generate_record().unwrap();
         assert_eq!("another_topic", rec.topic);
-        assert_eq!(10u64.to_be_bytes().to_vec(), rec.key.unwrap());
-        assert_eq!("another payload".as_bytes(), rec.payload.unwrap());
+        assert_eq!(10u64.to_be_bytes().to_vec(), rec.key.clone().unwrap());
+        assert_eq!("another payload".as_bytes(), rec.payload.clone().unwrap());
 
         assert_eq!(3, rec.headers.len());
         assert!(rec.headers.contains_key("k1"));
@@ -341,6 +354,14 @@ mod tests {
         assert!(rec.headers.contains_key("k3"));
 
         assert_eq!(None, rec.partition);
+
+        let fut_rec = rec.as_future_record();
+        assert_eq!("another_topic", fut_rec.topic);
+        assert!(fut_rec.key.is_some());
+        assert!(fut_rec.payload.is_some());
+        assert!(fut_rec.partition.is_none());
+        assert!(fut_rec.headers.is_some());
+        assert_eq!(3, fut_rec.headers.unwrap().count());
     }
 
     #[test]
@@ -380,5 +401,59 @@ mod tests {
 
         let rec_payload = i64::from_be_bytes(rec.payload.unwrap().as_slice().try_into().unwrap());
         assert!((123..=125).contains(&rec_payload));
+    }
+
+    #[test]
+    fn test_value_generator_clap_parser() {
+        let res = ValueGenerator::clap_parser("string:StRiNgA");
+        assert!(res.is_ok());
+        assert_eq!(ValueGenerator::String("StRiNgA".to_string()), res.unwrap());
+
+        let res = ValueGenerator::clap_parser("file:Cargo.toml");
+        assert!(res.is_ok());
+        assert_eq!(ValueGenerator::File(PathBuf::from("Cargo.toml")), res.unwrap());
+
+        let res = ValueGenerator::clap_parser("alpha:11");
+        assert!(res.is_ok());
+        assert_eq!(ValueGenerator::RandAlphaNum(11), res.unwrap());
+
+        let res = ValueGenerator::clap_parser("bytes:21");
+        assert!(res.is_ok());
+        assert_eq!(ValueGenerator::RandBytes(21), res.unwrap());
+
+        let res = ValueGenerator::clap_parser("int:10-100");
+        assert!(res.is_ok());
+        assert_eq!(ValueGenerator::RandInt(10, 100), res.unwrap());
+
+        let res = ValueGenerator::clap_parser("float:11-213.1");
+        assert!(res.is_ok());
+        assert_eq!(ValueGenerator::RandFloat(11., 213.1), res.unwrap());
+    }
+
+    #[test]
+    fn test_failure_value_generator_clap_parser() {
+        let res = ValueGenerator::clap_parser("stringz:StRiNgA");
+        assert!(res.is_err());
+        assert_eq!("Unsupported TYPE 'stringz:...'", res.unwrap_err());
+
+        let res = ValueGenerator::clap_parser("asdasd");
+        assert!(res.is_err());
+        assert_eq!("Should have 'TYPE:INPUT' format", res.unwrap_err());
+
+        let res = ValueGenerator::clap_parser("file:does_not_exist");
+        assert!(res.is_err());
+        assert_eq!("INPUT file 'does_not_exist' does not exist or is not a file", res.unwrap_err());
+
+        let res = ValueGenerator::clap_parser("bytes:gimme_some");
+        assert!(res.is_err());
+        assert_eq!("Failed to parse INPUT 'SIZE' from 'bytes:SIZE': invalid digit found in string", res.unwrap_err());
+
+        let res = ValueGenerator::clap_parser("float:123,456");
+        assert!(res.is_err());
+        assert_eq!("Inclusive range should have 'min-max' format", res.unwrap_err());
+
+        let res = ValueGenerator::clap_parser("int:abc-asd");
+        assert!(res.is_err());
+        assert_eq!("Failed to parse INPUT 'MIN' from 'int:MIN-MAX': invalid digit found in string", res.unwrap_err());
     }
 }
