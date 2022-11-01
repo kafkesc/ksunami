@@ -4,7 +4,7 @@ _**Waves of Kafka Records!**_
 
 [![Build + Test](https://github.com/kafkesc/ksunami/actions/workflows/build+test.yml/badge.svg)](https://github.com/kafkesc/ksunami/actions/workflows/build+test.yml)
 
-## :grey_question: Why?
+## Why?
 
 Ksunami is a command line tool to produce volumes of (dummy) records against a [Kafka](https://kafka.apache.org/) cluster.
 
@@ -14,7 +14,7 @@ flow of records, following a very specific traffic pattern that repeats periodic
 Ksunami offers a way to set up the production of records, expressing the scenario as a sequence of "phases"
 that repeat indefinitely.
 
-## :bulb: Features
+## Features
 
 * Production described in 4 "phases" that repeat in circle: `min`, `up`, `max` and `down`
 * All phases are configurable in terms of _seconds_ (duration) and _records per second_ (workload)
@@ -25,7 +25,7 @@ that repeat indefinitely.
 * Built on top of the awesome [librdkafka](https://github.com/edenhill/librdkafka) :heart:,
   thanks to the Rust binding [rdkafka](https://crates.io/crates/rdkafka) :heart_eyes:
 
-## :horse: Get started
+## Get started
 
 ### Cargo install
 
@@ -35,13 +35,24 @@ TODO
 
 TODO
 
-## :dragon: Core concepts
+## Core concepts
 
-### :traffic_light: The 4 phases
+### The 4 phases
 
-TODO
+Ksunami is designed around the idea that the user has a specific "workload pattern" that they want to reproduce
+against their Kafka cluster. It might be steady/stable and never changing, or it can be a regular flux of records,
+interleaved with dramatic spikes that happen at regular intervals. Or it can be that you have a new customer that will
+bring lots more traffic to your Kafka cluster.
 
-### :roller_coaster: Transitions
+We have elected to describe such a workload in 4 phases, `min, up, max, down`, that repeat indefinitely:
+
+![](./images/workload-phases.png)
+
+Each phase is associated with a `*-sec` duration argument, to choose how long each should be.
+Additionally, `min` and `max` are associated with an amount of _records/sec_ (i.e. _workload_), while `up` and `down`
+are associated with a _transition_.
+
+### Transitions
 
 When moving between `min` and `max` phases, the phases `up` and `down` are traversed. Those phases are "transitional":
 Ksunami allows to describe _"how"_ the transition between the phases happens. **Each transition has a name**,
@@ -72,12 +83,12 @@ that Ksunami supports, plotted both for the `up` and `down` phases:
 
 Yes! It's possible to define additional transition types, by adding values to the `Transition enum`.
 
-## :racehorse: Usage
+## Usage
 
 To begin, start with `ksunami -h` or `ksunami --help` for the short and long versions of the usage instructions.
 _Go ahead, I'll wait!_.
 
-### :wrench: Configuring the Producer
+### Configuring the Producer
 
 Additional to the obvious `-b, --brokers` for the bootstrap brokers, and `--client-id` for the client identifier,
 it's possible to fine tune the Provider via `--partitioner` and `-c, --config`.
@@ -110,7 +121,7 @@ For example, to set a _200ms producer lingering_ and to _limit the number of pro
 $ ksunami ... -c linger.ms:200 ... --config message.send.max.retries:5 ...
 ```
 
-### :factory: What goes into each Record
+### What goes into each Record
 
 You can configure the content of each record produced by Ksunami:
 
@@ -143,33 +154,69 @@ and the _payload is a random sequence of 100 bytes_:
 $ ksunami ... --key int:1-1000 --payload bytes:100 
 ```
 
-### :chart_with_upwards_trend: How many Records
+### Records: how many and for how long
 
-TODO
+As seen above when we introduced the [4 phases](#the-4-phases), Ksunami sees a workload pattern as 
+a set of durations, workload volume and transitions.
 
-### :microphone: Log verbosity
+#### Min and Max
+
+The `min` and `max` phases represent the range of workload that a user wants to describe, and once setup, Ksunami will
+cyclically go from `min` to `max` to `min` and so forth. The workload is expressed as _records/sec_, and the duration of
+each phase in seconds.
+
+**Why seconds?** Because it's small enough to describe any meaningful Kafka workload. Using a smaller unit would have
+yielded no real benefit. And using a larger unit, would lead to too coarse workload description. 
+
+The arguments used to configure `min` and `max`:
+
+|          Argument | Description                                                  | Default |
+|------------------:|:-------------------------------------------------------------|:-------:|
+| `--min <REC/SEC>` | Minimum amount of records/sec                                |         |
+| `--min-sec <SEC>` | How long to produce at minimum records/sec, before ramp-up   |  `60`   |
+| `--max <REC/SEC>` | Maximum amount of records/sec                                |         |
+| `--max-sec <SEC>` | How long to produce at maximum records/sec, before ramp-down |  `60`   |
+
+#### Ramp Up and Down
+
+Again, as [seen above](#the-4-phases), between the `min` and `max` phases there are 2 transitional phases: `up` and `down`.
+
+They exist to describe the mutation of workload, as time progresses.
+Ksunami offers a collection of [transitions](#transitions), and they are provided as arguments: Ksunami takes care
+of taking the `[0..1]` curves shown above, and transpose them to the actual records/sec workload the user is after.
+
+The arguments used to configure `up` and `down`:
+
+|                   Argument | Description                                              | Default  |
+|---------------------------:|:---------------------------------------------------------|:--------:|
+|   `--up <TRANSITION_TYPE>` | Ramp-up transition from minimum to maximum records/sec   | `linear` |
+|           `--up-sec <SEC>` | How long the ramp-up transition should last              |   `10`   |
+| `--down <TRANSITION_TYPE>` | Ramp-down transition from maximum to minimum records/sec |  `none`  |
+|         `--down-sec <SEC>` | How long the ramp-down transition should last            |   `10`   |
+
+### Log verbosity
 
 Ksunami follows the long tradition of `-v/-q` to control the verbosity of it's logging:
 
-| Arguments | Log verbosity level |
-|----------:|:--------------------|
-|  `-qq...` | `OFF`               |
-|      `-q` | `ERROR`             | 
- |         - | `WARN`              |
- |      `-v` | `INFO`              |
-|     `-vv` | `DEBUG`             |
-| `-vvv...` | `TRACE`             |
+| Arguments | Log verbosity level | Default |
+|----------:|:--------------------|:-------:|
+|  `-qq...` | `OFF`               |         |
+|      `-q` | `ERROR`             |         |
+ |         - | `WARN`              |    x    |
+ |      `-v` | `INFO`              |         |
+|     `-vv` | `DEBUG`             |         |
+| `-vvv...` | `TRACE`             |         |
 
 It uses [log](https://crates.io/crates/log) and [env_logger](https://crates.io/crates/env_logger),
 and so logging can be configured and fine-tuned using the Environment Variable `KSUNAMI_LOG`.
 Please take a look at [env_logger doc](https://docs.rs/env_logger/latest/env_logger/#enabling-logging) for
 more details.
 
-## :rainbow: Examples
+## Examples
 
 TODO
 
-## :pushpin: TODOs
+## TODOs
 
 * [ ] Support for jitter in the size of keys/payload
 * [ ] Support for jitter in the number of records per phase
@@ -183,7 +230,7 @@ TODO
 * [ ] Support for Tracing
 * [ ] Support for OpenTelemetry
 
-## :four_leaf_clover: License
+## License
 
 [Apache License 2.0](./LICENSE)
 
