@@ -8,3 +8,6 @@
 .idea/
 *.iws
 .fleet/
+
+# macOS
+.DS_Store

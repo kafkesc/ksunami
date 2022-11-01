@@ -43,7 +43,34 @@ TODO
 
 ### :roller_coaster: Transitions
 
-TODO
+When moving between `min` and `max` phases, the phases `up` and `down` are traversed. Those phases are "transitional":
+Ksunami allows to describe _"how"_ the transition between the phases happens. **Each transition has a name**,
+and corresponds to a Cubic Bézier[^bezier] curve: leaving to the reader to learn about this class of curves,
+the short story is that Cubic Bézier curves describe the _interpolation_ across **4 control points**, `P0, P1, P2, P3`.
+
+Imagine we want to plot an `up` transition between the `min` and `max` phases, on a cartesian plane.
+Time is expressed by `x`, and we consider the interval `x = [0..1]` as start and end of the transition.
+The volume of records produced is instead expressed by `y`, also considered in the interval `y = [0..1]`.
+
+Given this premise, `P0=(0,0)` and `P3=(1,1)` represent the start and end of the `up` transition;
+`P0=(0,1)` and `P3=(1,0)` represent instead the `down` transition.
+
+Our transition curve is encased in the bounding box `(0,0), (1,0), (1,1), (0,1)`, and we can describe various kinds of
+transition, by placing `P1` and `P2` within this bounding box. The following is the current list of transition name
+that Ksunami supports, plotted both for the `up` and `down` phases:
+
+|   Transition   |      `--up <TRANSITION_TYPE>`[^desmos]       |      `--down <TRANSITION_TYPE>`[^desmos]       | 
+|:--------------:|:--------------------------------------------:|:----------------------------------------------:|
+|     `none`     |                      -                       |                       -                        |
+|    `linear`    |    ![](./images/up-transition_linear.png)    |    ![](./images/down-transition_linear.png)    |
+|   `ease-in`    |   ![](./images/up-transition_ease-in.png)    |   ![](./images/down-transition_ease-in.png)    |
+|   `ease-out`   |   ![](./images/up-transition_ease-out.png)   |   ![](./images/down-transition_ease-out.png)   |
+| `ease-in-out`  | ![](./images/up-transition_ease-in-out.png)  | ![](./images/down-transition_ease-in-out.png)  |
+|   `spike-in`   |   ![](./images/up-transition_spike-in.png)   |   ![](./images/down-transition_spike-in.png)   |    
+|  `spike-out`   |  ![](./images/up-transition_spike-out.png)   |  ![](./images/down-transition_spike-out.png)   |
+| `spike-in-out` | ![](./images/up-transition_spike-in-out.png) | ![](./images/down-transition_spike-in-out.png) |
+
+Yes! It's possible to define additional transition types, by adding values to the `Transition enum`.
 
 ## :racehorse: Usage
 
@@ -147,7 +174,15 @@ TODO
 * [ ] Support for sequential values for keys/payload (seq of ints? seq of strings? closed sequence? random amongst a set?)
 * [ ] Publish a binary for Linux/macOS/Windows x AMD64/ARM64
 * [ ] Publish a build via Homebrew
+* [ ] Support for Tracing
+* [ ] Support for OpenTelemetry
 
 ## :four_leaf_clover: License
 
 [Apache License 2.0](./LICENSE)
+
+## Notes
+
+[^desmos]: Thanks to [this page](https://www.desmos.com/calculator/d1ofwre0fr) ([Desmos Graphing Calculator](https://www.desmos.com/calculator))
+     to provide an easy way to plot Cubic Bézier[^bezier] curves.
+[^bezier]: Cubic Bézier curves definition ([Wikipedia](https://en.wikipedia.org/wiki/B%C3%A9zier_curve#Cubic_B%C3%A9zier_curves)).
