@@ -24,6 +24,6 @@ jobs:
       run: sudo apt install -y libsasl2-dev
     - uses: actions/checkout@v3
     - name: Build
-      run: cargo build --verbose
+      run: cargo build
     - name: Test
-      run: cargo test --verbose
+      run: cargo test
