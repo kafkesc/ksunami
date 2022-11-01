@@ -6,8 +6,7 @@ _**Waves of Kafka Records!**_
 
 ## :grey_question: Why?
 
-Ksunami is a command line tool to produce volumes of (dummy) records against a [Kafka](https://kafka.apache.org/)
-cluster.
+Ksunami is a command line tool to produce volumes of (dummy) records against a [Kafka](https://kafka.apache.org/) cluster.
 
 If you are experimenting with scalability and latency against Kafka, and are looking for ways to reproduce a continues
 flow of records, following a very specific traffic pattern that repeats periodically, **Ksunami** is the tool for you.
@@ -19,8 +18,7 @@ that repeat indefinitely.
 
 * Production described in 4 "phases" that repeat in circle: `min`, `up`, `max` and `down`
 * All phases are configurable in terms of _seconds_ (duration) and _records per second_ (workload)
-* `up` and `down` can be one of many transitions, each with a specific "shape" (ex. `linear`, `ease-in`, `spike-out`,
-  ...)
+* `up` and `down` can be one of many transitions, each with a specific "shape" (ex. `linear`, `ease-in`, `spike-out`, ...)
 * Records `key` and `payload` are configurable with fixed, from-file and randomly-generated values
 * Records headers can be added to each record
 * Kafka producer is fully configurable, including selecting a partitioner
@@ -86,14 +84,15 @@ it's possible to fine tune the Provider via `--partitioner` and `-c, --config`.
 
 Possible values for the `--partitioner` argument are:
 
-* `random`: Random distribution
-* `consistent`: CRC32 hash of key (Empty and NULL keys are mapped to single partition)
-* `consistent_random` (default): CRC32 hash of key (Empty and NULL keys are randomly partitioned)
-* `murmur2`: Java Producer compatible Murmur2 hash of key (NULL keys are mapped to single partition)
-* `murmur2_random`: Java Producer compatible Murmur2 hash of key (NULL keys are randomly partitioned).
-  This is functionally equivalent to the default partitioner in the Java Producer
-* `fnv1a`: FNV-1a hash of key (NULL keys are mapped to single partition)
-* `fnv1a_random`: FNV-1a hash of key (NULL keys are randomly partitioned)
+|  Partitioner name[^supp_part] | Description                                                                                                                           |
+|------------------------------:|:--------------------------------------------------------------------------------------------------------------------------------------|
+|                      `random` | Random distribution                                                                                                                   |
+ |                  `consistent` | CRC32 hash of key (Empty and NULL keys are mapped to single partition)                                                                |
+| `consistent_random` (default) | CRC32 hash of key (Empty and NULL keys are randomly partitioned)                                                                      |
+|                     `murmur2` | Java Producer compatible Murmur2 hash of key (NULL keys are mapped to single partition)                                               |
+|              `murmur2_random` | Java Producer compatible Murmur2 hash of key (NULL keys are randomly partitioned): equivalent to default partitioner in Java Producer |
+|                       `fnv1a` | FNV-1a hash of key (NULL keys are mapped to single partition)                                                                         |
+|                `fnv1a_random` | FNV-1a hash of key (NULL keys are randomly partitioned)                                                                               |
 
 For example, to use a _purely random partitioner_:
 
@@ -126,12 +125,14 @@ a richer set of options.
 
 The supported `KEY_TYPE/PAYLOAD_TYPE` are:
 
-* `string:STR`: `STR` is a plain string
-* `file:PATH`: `PATH` is a path to an existing file
-* `alpha:LENGTH`: `LENGTH` is the length of a random alphanumeric string
-* `bytes:LENGTH`: `LENGTH` is the length of a random bytes array
-* `int:MIN-MAX`: `MIN` and `MAX` are limits of an inclusive range from which an integer number is picked
-* `float:MIN-MAX`: `MIN` and `MAX` are limits of an inclusive range from which a float number is picked
+|          Format | Description                                                                             |
+|----------------:|:----------------------------------------------------------------------------------------|
+|    `string:STR` | `STR` is a plain string                                                                 |
+|     `file:PATH` | `PATH` is a path to an existing file                                                    |
+|  `alpha:LENGTH` | `LENGTH` is the length of a random alphanumeric string                                  |
+|  `bytes:LENGTH` | `LENGTH` is the length of a random bytes array                                          |
+|   `int:MIN-MAX` | `MIN` and `MAX` are limits of an inclusive range from which an integer number is picked |
+| `float:MIN-MAX` | `MIN` and `MAX` are limits of an inclusive range from which a float number is picked    |
 
 This allows to have a degree of flexibility to the content that is placed inside records.
 
@@ -150,12 +151,14 @@ TODO
 
 Ksunami follows the long tradition of `-v/-q` to control the verbosity of it's logging:
 
-* `-qq... = OFF`
-* `-q... = ERROR`
-* `<none>  = WARN`
-* `-v = INFO`
-* `-vv = DEBUG`
-* `-vvv... = TRACE`
+| Arguments | Log verbosity level |
+|----------:|:--------------------|
+|  `-qq...` | `OFF`               |
+|      `-q` | `ERROR`             | 
+ |         - | `WARN`              |
+ |      `-v` | `INFO`              |
+|     `-vv` | `DEBUG`             |
+| `-vvv...` | `TRACE`             |
 
 It uses [log](https://crates.io/crates/log) and [env_logger](https://crates.io/crates/env_logger),
 and so logging can be configured and fine-tuned using the Environment Variable `KSUNAMI_LOG`.
@@ -186,8 +189,9 @@ TODO
 
 ## Notes
 
-[^desmos]: Thanks
-to [this page](https://www.desmos.com/calculator/d1ofwre0fr) ([Desmos Graphing Calculator](https://www.desmos.com/calculator))
-to provide an easy way to plot Cubic Bézier[^bezier] curves.
-[^bezier]: Cubic Bézier curves
-definition ([Wikipedia](https://en.wikipedia.org/wiki/B%C3%A9zier_curve#Cubic_B%C3%A9zier_curves)).
+[^desmos]: Thanks to [this page](https://www.desmos.com/calculator/d1ofwre0fr)
+([Desmos Graphing Calculator](https://www.desmos.com/calculator)) to provide an easy way to plot
+Cubic Bézier curves.
+[^bezier]: Cubic Bézier curves definition ([Wikipedia](https://en.wikipedia.org/wiki/B%C3%A9zier_curve#Cubic_B%C3%A9zier_curves)).
+[^supp_part]: Ksunami, being based on [librdkafka](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md),
+only supports the partitioners offered by that library

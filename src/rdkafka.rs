@@ -19,8 +19,7 @@ pub enum PartitionerConfig {
     /// Java Producer compatible Murmur2 hash of key (NULL keys are mapped to single partition).
     Murmur2,
 
-    /// Java Producer compatible Murmur2 hash of key (NULL keys are randomly partitioned).
-    /// This is functionally equivalent to the default partitioner in the Java Producer.
+    /// Java Producer compatible Murmur2 hash of key (NULL keys are randomly partitioned): equivalent to default partitioner in Java Producer
     Murmur2Random,
 
     /// FNV-1a hash of key (NULL keys are mapped to single partition).
