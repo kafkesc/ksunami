@@ -1,4 +1,4 @@
-name: Build + Test
+name: CI
 
 on:
   push:
@@ -16,14 +16,15 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  CI:
+  test:
     runs-on: ubuntu-latest
 
     steps:
     - name: Build dependencies
       run: sudo apt install -y libsasl2-dev
-    - uses: actions/checkout@v3
-    - name: Build
+    - name: Check-out code
+      uses: actions/checkout@v3
+    - name: Build code
       run: cargo build
-    - name: Test
+    - name: Run tests
       run: cargo test
