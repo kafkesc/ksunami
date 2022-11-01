@@ -6,7 +6,8 @@ _**Waves of Kafka Records!**_
 
 ## :grey_question: Why?
 
-Ksunami is a command line tool to produce volumes of (dummy) records against a [Kafka](https://kafka.apache.org/) cluster.
+Ksunami is a command line tool to produce volumes of (dummy) records against a [Kafka](https://kafka.apache.org/)
+cluster.
 
 If you are experimenting with scalability and latency against Kafka, and are looking for ways to reproduce a continues
 flow of records, following a very specific traffic pattern that repeats periodically, **Ksunami** is the tool for you.
@@ -17,8 +18,9 @@ that repeat indefinitely.
 ## :bulb: Features
 
 * Production described in 4 "phases" that repeat in circle: `min`, `up`, `max` and `down`
-* All phases are configurable in terms of _seconds_ (duration) and _records per second_ (workload) 
-* `up` and `down` can be one of many transitions, each with a specific "shape" (ex. `linear`, `ease-in`, `spike-out`, ...)
+* All phases are configurable in terms of _seconds_ (duration) and _records per second_ (workload)
+* `up` and `down` can be one of many transitions, each with a specific "shape" (ex. `linear`, `ease-in`, `spike-out`,
+  ...)
 * Records `key` and `payload` are configurable with fixed, from-file and randomly-generated values
 * Records headers can be added to each record
 * Kafka producer is fully configurable, including selecting a partitioner
@@ -59,16 +61,16 @@ Our transition curve is encased in the bounding box `(0,0), (1,0), (1,1), (0,1)`
 transition, by placing `P1` and `P2` within this bounding box. The following is the current list of transition name
 that Ksunami supports, plotted both for the `up` and `down` phases:
 
-|   Transition   |      `--up <TRANSITION_TYPE>`[^desmos]       |      `--down <TRANSITION_TYPE>`[^desmos]       | 
-|:--------------:|:--------------------------------------------:|:----------------------------------------------:|
-|     `none`     |                      -                       |                       -                        |
-|    `linear`    |    ![](./images/up-transition_linear.png)    |    ![](./images/down-transition_linear.png)    |
-|   `ease-in`    |   ![](./images/up-transition_ease-in.png)    |   ![](./images/down-transition_ease-in.png)    |
-|   `ease-out`   |   ![](./images/up-transition_ease-out.png)   |   ![](./images/down-transition_ease-out.png)   |
-| `ease-in-out`  | ![](./images/up-transition_ease-in-out.png)  | ![](./images/down-transition_ease-in-out.png)  |
-|   `spike-in`   |   ![](./images/up-transition_spike-in.png)   |   ![](./images/down-transition_spike-in.png)   |    
-|  `spike-out`   |  ![](./images/up-transition_spike-out.png)   |  ![](./images/down-transition_spike-out.png)   |
-| `spike-in-out` | ![](./images/up-transition_spike-in-out.png) | ![](./images/down-transition_spike-in-out.png) |
+| Transition[^desmos] |           `--up <TRANSITION_TYPE>`           |           `--down <TRANSITION_TYPE>`           | 
+|:-------------------:|:--------------------------------------------:|:----------------------------------------------:|
+|       `none`        |                      -                       |                       -                        |
+|      `linear`       |    ![](./images/up-transition_linear.png)    |    ![](./images/down-transition_linear.png)    |
+|      `ease-in`      |   ![](./images/up-transition_ease-in.png)    |   ![](./images/down-transition_ease-in.png)    |
+|     `ease-out`      |   ![](./images/up-transition_ease-out.png)   |   ![](./images/down-transition_ease-out.png)   |
+|    `ease-in-out`    | ![](./images/up-transition_ease-in-out.png)  | ![](./images/down-transition_ease-in-out.png)  |
+|     `spike-in`      |   ![](./images/up-transition_spike-in.png)   |   ![](./images/down-transition_spike-in.png)   |    
+|     `spike-out`     |  ![](./images/up-transition_spike-out.png)   |  ![](./images/down-transition_spike-out.png)   |
+|   `spike-in-out`    | ![](./images/up-transition_spike-in-out.png) | ![](./images/down-transition_spike-in-out.png) |
 
 Yes! It's possible to define additional transition types, by adding values to the `Transition enum`.
 
@@ -88,7 +90,7 @@ Possible values for the `--partitioner` argument are:
 * `consistent`: CRC32 hash of key (Empty and NULL keys are mapped to single partition)
 * `consistent_random` (default): CRC32 hash of key (Empty and NULL keys are randomly partitioned)
 * `murmur2`: Java Producer compatible Murmur2 hash of key (NULL keys are mapped to single partition)
-* `murmur2_random`: Java Producer compatible Murmur2 hash of key (NULL keys are randomly partitioned). 
+* `murmur2_random`: Java Producer compatible Murmur2 hash of key (NULL keys are randomly partitioned).
   This is functionally equivalent to the default partitioner in the Java Producer
 * `fnv1a`: FNV-1a hash of key (NULL keys are mapped to single partition)
 * `fnv1a_random`: FNV-1a hash of key (NULL keys are randomly partitioned)
@@ -148,11 +150,11 @@ TODO
 
 Ksunami follows the long tradition of `-v/-q` to control the verbosity of it's logging:
 
-* `-qq...  = OFF`
-* `-q...   = ERROR`
+* `-qq... = OFF`
+* `-q... = ERROR`
 * `<none>  = WARN`
-* `-v      = INFO`
-* `-vv     = DEBUG`
+* `-v = INFO`
+* `-vv = DEBUG`
 * `-vvv... = TRACE`
 
 It uses [log](https://crates.io/crates/log) and [env_logger](https://crates.io/crates/env_logger),
@@ -171,7 +173,8 @@ TODO
 * [ ] Support for jitter in the duration of each phase
 * [ ] Surface "producer ack" config (?)
 * [ ] Surface "compression" config (?)
-* [ ] Support for sequential values for keys/payload (seq of ints? seq of strings? closed sequence? random amongst a set?)
+* [ ] Support for sequential values for keys/payload (seq of ints? seq of strings? closed sequence? random amongst a
+  set?)
 * [ ] Publish a binary for Linux/macOS/Windows x AMD64/ARM64
 * [ ] Publish a build via Homebrew
 * [ ] Support for Tracing
@@ -183,6 +186,8 @@ TODO
 
 ## Notes
 
-[^desmos]: Thanks to [this page](https://www.desmos.com/calculator/d1ofwre0fr) ([Desmos Graphing Calculator](https://www.desmos.com/calculator))
-     to provide an easy way to plot Cubic Bézier[^bezier] curves.
-[^bezier]: Cubic Bézier curves definition ([Wikipedia](https://en.wikipedia.org/wiki/B%C3%A9zier_curve#Cubic_B%C3%A9zier_curves)).
+[^desmos]: Thanks
+to [this page](https://www.desmos.com/calculator/d1ofwre0fr) ([Desmos Graphing Calculator](https://www.desmos.com/calculator))
+to provide an easy way to plot Cubic Bézier[^bezier] curves.
+[^bezier]: Cubic Bézier curves
+definition ([Wikipedia](https://en.wikipedia.org/wiki/B%C3%A9zier_curve#Cubic_B%C3%A9zier_curves)).
