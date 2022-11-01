@@ -4,7 +4,15 @@ version = "0.1.0"
 edition = "2021"
 authors = ["Ivan De Marino <detronizator@gmail.com>", "Kafkesc <https://github.com/kafkesc>"]
 repository = "https://github.com/kafkesc/ksunami"
-description = "Waves of Kafka Records"
+description = """
+Waves of Kafka Records
+
+A command-line tool to produce a constant, configurable, cyclical stream of records,
+and send it to a Kafka cluster topic. Records content is configurable but random:
+this tool is designed for development, performance and scalability testing.
+"""
+homepage = "https://github.com/kafkesc/ksunami"
+license-file = "LICENSE"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
