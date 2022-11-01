@@ -1,17 +1,11 @@
 [package]
 name = "ksunami"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2021"
 authors = ["Ivan De Marino <detronizator@gmail.com>", "Kafkesc <https://github.com/kafkesc>"]
 repository = "https://github.com/kafkesc/ksunami"
-description = """
-Waves of Kafka Records
-
-A command-line tool to produce a constant, configurable, cyclical stream of records,
-and send it to a Kafka cluster topic. Records content is configurable but random:
-this tool is designed for development, performance and scalability testing.
-"""
 homepage = "https://github.com/kafkesc/ksunami"
+description = "Produce constant, configurable, cyclical waves of Kafka Records"
 license-file = "LICENSE"
 keywords = ["kafka", "workload", "testing", "performance", "developer-tools"]
 categories = ["command-line-utilities", "development-tools"]
