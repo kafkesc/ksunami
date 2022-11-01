@@ -15,6 +15,10 @@ homepage = "https://github.com/kafkesc/ksunami"
 license-file = "LICENSE"
 keywords = ["kafka", "workload", "testing", "developer-tools", "performance", "kafkesc", "cyclical"]
 categories = ["command-line-utilities", "development-tools"]
+exclude = [
+    ".github/",
+    ".gitignore",
+]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
