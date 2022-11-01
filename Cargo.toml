@@ -13,7 +13,7 @@ this tool is designed for development, performance and scalability testing.
 """
 homepage = "https://github.com/kafkesc/ksunami"
 license-file = "LICENSE"
-keywords = ["kafka", "workload", "testing", "developer-tools", "performance", "kafkesc", "cyclical"]
+keywords = ["kafka", "workload", "testing", "performance", "developer-tools"]
 categories = ["command-line-utilities", "development-tools"]
 exclude = [
     ".github/",
