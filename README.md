@@ -24,8 +24,7 @@ performance and scalability testing of your infrastructure.
 * Records `key` and `payload` are configurable with fixed, from-file and randomly-generated values
 * Records headers can be added to each record
 * Kafka producer is fully configurable, including selecting a partitioner
-* Built on top of the awesome [librdkafka](https://github.com/edenhill/librdkafka) :heart:,
-  thanks to the Rust binding [rdkafka](https://crates.io/crates/rdkafka) :heart_eyes:
+* Built on top of the awesome [librdkafka](https://github.com/edenhill/librdkafka)
 
 ## Get started
 
@@ -126,7 +125,7 @@ For example, to use a _purely random partitioner_:
 $ ksunami ... --partitioner random ...
 ```
 
-#### Additional configuration for the Producer
+#### Additional configuration
 
 As per `-c,--config`, all the values supported [librdkafka](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md)
 are supported by Ksunami's producer.
@@ -137,7 +136,7 @@ For example, to set a _200ms producer lingering_ and to _limit the number of pro
 $ ksunami ... -c linger.ms:200 ... --config message.send.max.retries:5 ...
 ```
 
-### What goes into each Record
+### Records: destination and content
 
 You can configure the content of each record produced by Ksunami:
 
@@ -170,7 +169,7 @@ and the _payload is a random sequence of 100 bytes_:
 $ ksunami ... --key int:1-1000 --payload bytes:100 
 ```
 
-### Records: how many and for how long
+### Records: amount and duration
 
 As seen above when we introduced the [4 phases](#the-4-phases), Ksunami sees a workload pattern as 
 a set of durations, workload volume and transitions.
@@ -193,7 +192,7 @@ The arguments used to configure `min` and `max`:
 | `--max <REC/SEC>` | Maximum amount of records/sec                                |         |
 | `--max-sec <SEC>` | How long to produce at maximum records/sec, before ramp-down |  `60`   |
 
-#### Ramp Up and Down
+#### (Ramping) Up and Down
 
 Again, as [seen above](#the-4-phases), between the `min` and `max` phases there are 2 transitional phases: `up` and `down`.
 
@@ -261,5 +260,5 @@ more details.
   for providing an easy way to plot [Cubic Bézier curves](https://en.wikipedia.org/wiki/B%C3%A9zier_curve#Cubic_B%C3%A9zier_curves).
 * Thanks to [flo_curves](https://crates.io/crates/flo_curves) for providing an easy Rust crate to manipulate Bézier curves.
 * Thanks to [librdkafka](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md) for being an awesome Kafka library,
-  used by pretty much all Kafka clients out there.
+  used by pretty much all Kafka clients out there, and thanks to the Rust binding [rdkafka](https://crates.io/crates/rdkafka).
 * Thanks to [clap](https://crates.io/crates/clap), for being the awesome-est CLI argument parser in existence.
