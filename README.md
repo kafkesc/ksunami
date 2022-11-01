@@ -2,7 +2,7 @@
 
 _**Waves of Kafka Records!**_
 
-[![Build + Test](https://github.com/kafkesc/ksunami/actions/workflows/build+test.yml/badge.svg)](https://github.com/kafkesc/ksunami/actions/workflows/build+test.yml)
+[![CI](https://github.com/kafkesc/ksunami/actions/workflows/ci.yml/badge.svg)](https://github.com/kafkesc/ksunami/actions/workflows/ci.yml)
 
 ## Why?
 
