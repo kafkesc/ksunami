@@ -1,8 +1,13 @@
 # Kafkesc - Ksunami
 
-_**Waves of Kafka Records!**_
+<div style="text-align: center;">
+<span style="font-weight: bold; font-style: italic; font-size: 1.5em;">Waves of Kafka Records!</span>
 
-[![CI](https://github.com/kafkesc/ksunami/actions/workflows/ci.yml/badge.svg)](https://github.com/kafkesc/ksunami/actions/workflows/ci.yml)
+[![CI](https://img.shields.io/github/workflow/status/kafkesc/ksunami/CI?label=CI&logo=Github&style=flat-square)](https://github.com/kafkesc/ksunami/actions/workflows/ci.yml)
+[![Apache 2.0](https://img.shields.io/crates/l/ksunami?logo=apache&style=flat-square)](https://github.com/kafkesc/ksunami/blob/main/LICENSE)
+[![Crates.io downloads](https://img.shields.io/crates/d/ksunami?logo=rust&style=flat-square)](https://crates.io/crates/ksunami)
+[![](https://img.shields.io/crates/v/ksunami?label=latest%20version&logo=rust&style=flat-square)](https://crates.io/crates/names/versions)
+</div>
 
 ## What's Ksunami?
 
@@ -37,6 +42,10 @@ $ cargo install ksunami
 ```
 
 ### Manually
+
+**TODO**
+
+## Examples
 
 **TODO**
 
@@ -227,10 +236,6 @@ and so logging can be configured and fine-tuned using the Environment Variable `
 Please take a look at [env_logger doc](https://docs.rs/env_logger/latest/env_logger/#enabling-logging) for
 more details.
 
-## Examples
-
-**TODO**
-
 ## Contributing
 
 **TODO**
@@ -246,6 +251,7 @@ more details.
 * [ ] Support for JSON values, where each fields can be paired with an instance of `ValueGenerator` enum?
 * [ ] Publish a binary for Linux/macOS/Windows x AMD64/ARM64
 * [ ] Publish a build via Homebrew
+* [ ] Publish a Docker image containing Ksunami
 * [ ] Support for Tracing
 * [ ] Support for OpenTelemetry
 * [ ] Write a small but clear contribution guide: something not too stringent, but that establishes a modicum of guidance and "boundaries"
