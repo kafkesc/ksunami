@@ -58,6 +58,7 @@ pub enum WorkloadPhase {
 }
 
 impl Workload {
+    #![allow(clippy::too_many_arguments)]
     pub fn new(
         min: u32,
         min_sec: u32,
