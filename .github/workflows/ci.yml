@@ -16,15 +16,42 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  test:
+  ci-workflow:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Build dependencies
+    - name: Install build dependencies
       run: sudo apt install -y libsasl2-dev
+
     - name: Check-out code
       uses: actions/checkout@v3
-    - name: Build code
-      run: cargo build
-    - name: Run tests
-      run: cargo test
+
+    - name: Install stable toolchain
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        profile: minimal
+        override: true
+        components: rustfmt, clippy
+
+    - name: Cargo check
+      uses: actions-rs/cargo@v1
+      with:
+        command: check
+
+    - name: Cargo fmt
+      uses: actions-rs/cargo@v1
+      with:
+        command: fmt
+        args: --all -- --check
+
+    - name: Cargo clippy
+      uses: actions-rs/cargo@v1
+      with:
+        command: clippy
+        args: -- -D warnings
+
+    - name: Cargo test
+      uses: actions-rs/cargo@v1
+      with:
+        command: test
