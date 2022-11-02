@@ -12,6 +12,7 @@ categories = ["command-line-utilities", "development-tools"]
 exclude = [
     ".github/",
     ".gitignore",
+    "images/*",
 ]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
