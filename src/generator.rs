@@ -5,7 +5,7 @@ use std::path::PathBuf;
 
 use rand::distributions::{Alphanumeric, DistString};
 use rand::{thread_rng, Rng};
-use rdkafka::message::OwnedHeaders;
+use rdkafka::message::{Header, OwnedHeaders};
 use rdkafka::producer::FutureRecord;
 
 /// Helps to generate a possible value used in [`RecordGenerator`].
@@ -193,7 +193,10 @@ impl GeneratedRecord {
         // Set headers
         let mut rec_headers = OwnedHeaders::new();
         for (k, v) in &self.headers {
-            rec_headers = rec_headers.add(k.as_str(), v.as_str());
+            rec_headers = rec_headers.insert(Header{
+                key: k,
+                value: Some(v),
+            });
         }
         rec.headers = Some(rec_headers);
         rec

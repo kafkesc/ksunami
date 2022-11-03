@@ -242,22 +242,6 @@ more details.
 
 **TODO**
 
-## TODOs
-
-* [ ] Support for jitter in the size of keys/payload
-* [ ] Support for jitter in the number of records per phase
-* [ ] Support for jitter in the duration of each phase
-* [ ] Surface "producer ack" config (?)
-* [ ] Surface "compression" config (?)
-* [ ] Support for sequential values for keys/payload (seq of ints? seq of strings? closed sequence? random amongst a set?)
-* [ ] Support for JSON values, where each fields can be paired with an instance of `ValueGenerator` enum?
-* [ ] Publish a binary for Linux/macOS/Windows x AMD64/ARM64
-* [ ] Publish a build via Homebrew
-* [ ] Publish a Docker image containing Ksunami
-* [ ] Support for Tracing
-* [ ] Support for OpenTelemetry
-* [ ] Write a small but clear contribution guide: something not too stringent, but that establishes a modicum of guidance and "boundaries"
-
 ## License
 
 [Apache License 2.0](./LICENSE)
