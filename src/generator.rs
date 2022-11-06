@@ -193,7 +193,7 @@ impl GeneratedRecord {
         // Set headers
         let mut rec_headers = OwnedHeaders::new();
         for (k, v) in &self.headers {
-            rec_headers = rec_headers.insert(Header{
+            rec_headers = rec_headers.insert(Header {
                 key: k,
                 value: Some(v),
             });
