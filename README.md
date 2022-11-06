@@ -33,19 +33,18 @@ performance and scalability testing of your infrastructure.
 * Kafka producer is fully configurable, including selecting a partitioner
 * Built on top of the awesome [librdkafka](https://github.com/edenhill/librdkafka)
 
-## Get started
+## Getting started
 
-### Cargo install
-
-If you already have the [Rust Toolchain](https://rustup.rs/) installed, just:
+To install `ksunami`, _currently_ you need to compile it yourself. You need the [Rust Toolchain](https://rustup.rs/)
+and then run:
 
 ```shell
 $ cargo install ksunami
 ```
 
-### Manually
-
-**TODO**
+In the future we aim to also provide [binary releases]([work-in-progress](https://github.com/kafkesc/ksunami/issues/13),
+a [batteries-included docker image](https://github.com/kafkesc/ksunami/issues/15) and even installation [via
+homebrew](https://github.com/kafkesc/ksunami/issues/14).
 
 ## Examples
 
