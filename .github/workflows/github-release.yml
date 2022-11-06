@@ -1,0 +1,64 @@
+name: GitHub Release
+
+permissions:
+  contents: write
+
+on:
+  push:
+    branches: [ "main" ]
+    tags: [ "v[0-9]+.[0-9]+.[0-9]+*" ]
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: GH Release
+    runs-on: ${{ matrix.runs_on }}
+    continue-on-error: ${{ matrix.experimental}}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Linux
+          - target: x86_64-unknown-linux-gnu
+            runs_on: ubuntu-latest
+            use_cross: false
+            experimental: true
+          # macOS
+          - target: x86_64-apple-darwin
+            runs_on: macos-latest
+            use_cross: false
+            experimental: true
+#          # Windows
+#          - target: x86_64-pc-windows-msvc
+#            runs_on: windows-latest
+#            use_cross: false
+#            experimental: true
+    steps:
+      - name: Dependencies (Linux)
+        if: ${{ matrix.runs_on == 'ubuntu-latest' }}
+        run: sudo apt install -y libsasl2-dev
+
+      - name: Check-out code
+        uses: actions/checkout@v2
+
+      - name: Toolchain ${{ matrix.target }}
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          target: ${{ matrix.target }}
+          profile: minimal
+          override: true
+
+      - name: Build release ${{ matrix.target }}
+        uses: actions-rs/cargo@v1
+        with:
+          use-cross: ${{ matrix.use_cross }}
+          command: build
+          args: --release --target=${{ matrix.target }}
+
+      - name: Show
+        run: |
+          pwd
+          ls -l target/
+          ls -l target/${{ matrix.target }}/release
+          file target/${{ matrix.target }}/release/ksunami
