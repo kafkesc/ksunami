@@ -7,6 +7,10 @@
 #        gcc-aarch64-linux-gnu g++-aarch64-linux-gnu \
 #        libsasl2-dev libssl-dev libzstd-dev zlib1g-dev
 #    """]
-#
-#[target.x86_64-unknown-linux-gnu]
-#pre-build = ["apt-get update && apt install -y cmake build-essential make pkg-config libsasl2-dev libssl-dev libzstd-dev zlib1g-dev clang llvm"]
+# NOTE: apt install -y cmake build-essential make pkg-config libsasl2-dev libssl-dev libzstd-dev zlib1g-dev clang llvm
+
+[target.x86_64-unknown-linux-gnu]
+pre-build = ["""
+    apt-get update && \
+    apt install -y libsasl2-dev
+"""]

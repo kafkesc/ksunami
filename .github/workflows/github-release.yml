@@ -29,7 +29,7 @@ jobs:
             use_cross: false
             experimental: true
           # Windows
-          - target: x86_64-pc-windows-gnu
+          - target: x86_64-pc-windows-msvc
             runs_on: windows-latest
             use_cross: false
             experimental: true
