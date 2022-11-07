@@ -11,7 +11,7 @@ on:
 
 jobs:
   release:
-    name: Build Release Artefacts
+    name: GH Release
     runs-on: ${{ matrix.runs_on }}
     continue-on-error: ${{ matrix.experimental}}
     strategy:
@@ -34,14 +34,14 @@ jobs:
 #            use_cross: false
 #            experimental: true
     steps:
-      - name: Install deps (Linux)
-        if: ${{ runner.os }} == "Linux"
+      - name: Dependencies (Linux)
+        if: matrix.os == 'ubuntu-latest'
         run: sudo apt install -y libsasl2-dev
 
       - name: Check-out code
         uses: actions/checkout@v2
 
-      - name: Install toolchain ${{ matrix.target }}
+      - name: Toolchain ${{ matrix.target }}
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
@@ -49,7 +49,7 @@ jobs:
           profile: minimal
           override: true
 
-      - name: Cargo build ${{ matrix.target }}
+      - name: Build release ${{ matrix.target }}
         uses: actions-rs/cargo@v1
         with:
           use-cross: ${{ matrix.use_cross }}
