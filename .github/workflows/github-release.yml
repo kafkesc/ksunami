@@ -35,7 +35,7 @@ jobs:
 #            experimental: true
     steps:
       - name: Dependencies (Linux)
-        if: ${{ matrix.os == 'ubuntu-latest' }}
+        if: ${{ matrix.runs_on == 'ubuntu-latest' }}
         run: sudo apt install -y libsasl2-dev
 
       - name: Check-out code
