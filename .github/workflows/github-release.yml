@@ -54,6 +54,8 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
         with:
           arch: ${{ matrix.arch }}
+          vsversion: 2019
+          sdk: 10.0.19041.0
 
       - name: Toolchain ${{ matrix.target }}
         uses: actions-rs/toolchain@v1
