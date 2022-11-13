@@ -28,20 +28,21 @@ jobs:
             runs_on: macos-latest
             use_cross: false
             experimental: true
-#          # Windows
-#          - target: x86_64-pc-windows-msvc
-#            runs_on: windows-latest
-#            use_cross: false
-#            experimental: true
+          # Windows
+          - target: x86_64-pc-windows-msvc
+            runs_on: windows-latest
+            use_cross: false
+            experimental: true
     steps:
       - name: Dependencies (Linux)
         if: ${{ matrix.runs_on == 'ubuntu-latest' }}
         run: sudo apt install -y libsasl2-dev
 
-      - name: Check-out code
+      - name: Check-out
         uses: actions/checkout@v2
 
-      - name: Toolchain ${{ matrix.target }}
+      - name: Toolchain ${{ matrix.target }} (Unix)
+        if: ${{ matrix.runs_on != 'windows-latest' }}
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
@@ -49,7 +50,18 @@ jobs:
           profile: minimal
           override: true
 
-      - name: Build release ${{ matrix.target }}
+      - name: Toolchain ${{ matrix.target }} (Windows)
+        if: ${{ matrix.runs_on == 'windows-latest' }}
+        run: |
+          # Disable the download progress bar which can cause perf issues
+          $ProgressPreference = "SilentlyContinue"
+          Invoke-WebRequest https://win.rustup.rs/ -OutFile rustup-init.exe
+          .\rustup-init.exe -y --default-host=${{ matrix.target }} --default-toolchain=none
+          del rustup-init.exe
+          rustup target add ${{ matrix.target }}
+        shell: powershell
+
+      - name: Build ${{ matrix.target }}
         uses: actions-rs/cargo@v1
         with:
           use-cross: ${{ matrix.use_cross }}
