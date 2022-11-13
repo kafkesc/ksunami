@@ -41,25 +41,30 @@ jobs:
       - name: Check-out
         uses: actions/checkout@v2
 
-      - name: Toolchain ${{ matrix.target }} (Unix)
-        if: ${{ matrix.runs_on != 'windows-latest' }}
+      - name: Toolchain ${{ matrix.target }}
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           target: ${{ matrix.target }}
           profile: minimal
           override: true
+          default: true
 
       - name: Toolchain ${{ matrix.target }} (Windows)
         if: ${{ matrix.runs_on == 'windows-latest' }}
         run: |
           # Disable the download progress bar which can cause perf issues
           $ProgressPreference = "SilentlyContinue"
-          Invoke-WebRequest https://win.rustup.rs/ -OutFile rustup-init.exe
-          .\rustup-init.exe -y --default-host=${{ matrix.target }} --default-toolchain=none
-          del rustup-init.exe
+          # Set the MSVC target
           rustup target add ${{ matrix.target }}
+          # Install and set default toolchain to stable MSVC
+          rustup default stable-${{ matrix.target }}
         shell: powershell
+
+      - name: Windows toolchain something something
+        if: ${{ matrix.runs_on == 'windows-latest' }}
+        run: |
+          choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows10SDK.19041"
 
       - name: Build ${{ matrix.target }}
         uses: actions-rs/cargo@v1
