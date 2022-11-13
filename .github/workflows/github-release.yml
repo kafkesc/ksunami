@@ -49,13 +49,13 @@ jobs:
         run: |
           choco install visualstudio2019buildtools --package-parameters "--add Microsoft.VisualStudio.Component.VC.CMake.Project --add Microsoft.VisualStudio.Component.VC.CoreIde --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64 --add Microsoft.VisualStudio.Component.Windows10SDK.19041 --add Microsoft.Component.VC.Runtime.OSSupport --add Microsoft.VisualStudio.Component.VC.CLI.Support --add Microsoft.VisualStudio.Component.VC.Llvm.Clang --add Microsoft.VisualStudio.Component.VC.Llvm.ClangToolset --add Microsoft.VisualStudio.Component.VC.Modules.x86.x64 --add Microsoft.VisualStudio.ComponentGroup.NativeDesktop.Llvm.Clang"
 
-      - name: Expose MS Visual C++ CMD (Windows)
-        if: ${{ matrix.runs_on == 'windows-latest' }}
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: ${{ matrix.arch }}
-          vsversion: 2019
-          sdk: 10.0.19041.0
+#      - name: Expose MS Visual C++ CMD (Windows)
+#        if: ${{ matrix.runs_on == 'windows-latest' }}
+#        uses: ilammy/msvc-dev-cmd@v1
+#        with:
+#          arch: ${{ matrix.arch }}
+#          vsversion: 2019
+#          sdk: 10.0.19041.0
 
       - name: Toolchain ${{ matrix.target }}
         uses: actions-rs/toolchain@v1
