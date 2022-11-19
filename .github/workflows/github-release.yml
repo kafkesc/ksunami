@@ -54,7 +54,9 @@ jobs:
         run: >-
           choco install visualstudio2019enterprise --package-parameters "
             --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64
+            --add Microsoft.VisualStudio.Component.Windows10SDK
             --add Microsoft.VisualStudio.Component.Windows10SDK.19041
+            --add Microsoft.VisualStudio.ComponentGroup.NativeDesktop.Core
             --add Microsoft.VisualStudio.Component.VC.CMake.Project
             --add Microsoft.VisualStudio.Component.VC.CoreBuildTools
             --add Microsoft.VisualStudio.Component.VC.ATLMFC
@@ -67,6 +69,11 @@ jobs:
         with:
           arch: ${{ matrix.arch }}
           vsversion: 2019
+
+      - name: UICC
+        if: ${{ startsWith(matrix.runs_on, 'windows') }}
+        run: |-
+          echo "%WindowsSdkVerBinPath%\x86" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: Toolchain ${{ matrix.target }}
         uses: actions-rs/toolchain@v1
