@@ -52,7 +52,7 @@ jobs:
       - name: VS C++ Build Tools (Windows)
         if: ${{ startsWith(matrix.runs_on, 'windows') }}
         run: >-
-          choco install visualstudio2019buildtools --package-parameters "
+          choco install visualstudio2019enterprise --package-parameters "
             --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64
             --add Microsoft.VisualStudio.Component.Windows10SDK.19041
             --add Microsoft.VisualStudio.Component.VC.CMake.Project
