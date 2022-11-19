@@ -55,6 +55,10 @@ jobs:
           choco install visualstudio2019buildtools --package-parameters "
             --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64
             --add Microsoft.VisualStudio.Component.Windows10SDK.19041
+            --add Microsoft.VisualStudio.Component.VC.CMake.Project
+            --add Microsoft.VisualStudio.Component.VC.CoreBuildTools
+            --add Microsoft.VisualStudio.Component.VC.ATLMFC
+            --add Microsoft.VisualStudio.Component.Roslyn.Compiler
           "
 
       - name: Expose MS Visual C++ CMD (Windows)
