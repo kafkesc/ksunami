@@ -61,7 +61,8 @@ jobs:
             --add Microsoft.VisualStudio.Component.VC.CoreBuildTools
             --add Microsoft.VisualStudio.Component.VC.ATLMFC
             --add Microsoft.VisualStudio.Component.Roslyn.Compiler
-          "
+          ";
+          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
 
       - name: Expose MS Visual C++ CMD (Windows)
         if: ${{ startsWith(matrix.runs_on, 'windows') }}
