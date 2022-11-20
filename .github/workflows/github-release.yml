@@ -60,9 +60,9 @@ jobs:
             --add Microsoft.VisualStudio.Component.VC.CMake.Project
             --add Microsoft.VisualStudio.Component.VC.CoreBuildTools
             --add Microsoft.VisualStudio.Component.VC.ATLMFC
-            --add Microsoft.VisualStudio.Component.Roslyn.Compiler
-          ";
-          choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+            --add Microsoft.VisualStudio.Component.Roslyn.Compiler"
+          ; choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+          ; choco install openssl
 
       - name: Expose MS Visual C++ CMD (Windows)
         if: ${{ startsWith(matrix.runs_on, 'windows') }}
