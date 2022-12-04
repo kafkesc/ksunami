@@ -10,32 +10,37 @@ on:
   workflow_dispatch:
 
 jobs:
+  name: GH Release
   release:
-    name: GH Release
-    runs-on: ${{ matrix.runs_on }}
-    continue-on-error: ${{ matrix.experimental}}
+    # Workflow strategy for multiple targets
     strategy:
       fail-fast: false
       matrix:
         include:
-#          # Linux
-#          - target: x86_64-unknown-linux-gnu
-#            arch: x86_64
-#            runs_on: ubuntu-latest
-#            use_cross: false
-#            experimental: true
-#          # macOS
-#          - target: x86_64-apple-darwin
-#            arch: x86_64
-#            runs_on: macos-latest
-#            use_cross: false
-#            experimental: true
-          # Windows
-          - target: x86_64-pc-windows-msvc
+          # Linux
+          - target: x86_64-unknown-linux-gnu
             arch: x86_64
-            runs_on: windows-2019
+            runs_on: ubuntu-latest
             use_cross: false
-            experimental: true
+            experimental: false
+
+          # macOS
+          - target: x86_64-apple-darwin
+            arch: x86_64
+            runs_on: macos-latest
+            use_cross: false
+            experimental: false
+
+    runs-on: ${{ matrix.runs_on }}
+    continue-on-error: ${{ matrix.experimental}}
+
+#          # Windows
+#          # TODO https://github.com/kafkesc/ksunami/issues/39
+#          - target: x86_64-pc-windows-msvc
+#            arch: x86_64
+#            runs_on: windows-2019
+#            use_cross: false
+#            experimental: true
     steps:
       - name: Check-out
         uses: actions/checkout@v2
@@ -44,33 +49,36 @@ jobs:
         if: ${{ matrix.runs_on == 'ubuntu-latest' }}
         run: sudo apt install -y libsasl2-dev
 
-      - name: Deps (Windows)
-        if: ${{ startsWith(matrix.runs_on, 'windows') }}
-        run: >-
-          choco install visualstudio2019enterprise --package-parameters "
-            --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64
-            --add Microsoft.VisualStudio.Component.Windows10SDK
-            --add Microsoft.VisualStudio.Component.Windows10SDK.19041
-            --add Microsoft.VisualStudio.ComponentGroup.NativeDesktop.Core
-            --add Microsoft.VisualStudio.Component.VC.CMake.Project
-            --add Microsoft.VisualStudio.Component.VC.CoreBuildTools
-            --add Microsoft.VisualStudio.Component.VC.ATLMFC
-            --add Microsoft.VisualStudio.Component.Roslyn.Compiler"
-          ; choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+#      # TODO https://github.com/kafkesc/ksunami/issues/39
+#      - name: Deps (Windows)
+#        if: ${{ startsWith(matrix.runs_on, 'windows') }}
+#        run: >-
+#          choco install visualstudio2019enterprise --package-parameters "
+#            --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64
+#            --add Microsoft.VisualStudio.Component.Windows10SDK
+#            --add Microsoft.VisualStudio.Component.Windows10SDK.19041
+#            --add Microsoft.VisualStudio.ComponentGroup.NativeDesktop.Core
+#            --add Microsoft.VisualStudio.Component.VC.CMake.Project
+#            --add Microsoft.VisualStudio.Component.VC.CoreBuildTools
+#            --add Microsoft.VisualStudio.Component.VC.ATLMFC
+#            --add Microsoft.VisualStudio.Component.Roslyn.Compiler"
+#          ; choco install cmake --installargs 'ADD_CMAKE_TO_PATH=System'
 
-      - name: Envs - MSVC (Windows)
-        if: ${{ startsWith(matrix.runs_on, 'windows') }}
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: ${{ matrix.arch }}
-          vsversion: 2019
+#      # TODO https://github.com/kafkesc/ksunami/issues/39
+#      - name: Envs - MSVC (Windows)
+#        if: ${{ startsWith(matrix.runs_on, 'windows') }}
+#        uses: ilammy/msvc-dev-cmd@v1
+#        with:
+#          arch: ${{ matrix.arch }}
+#          vsversion: 2019
 
-      - name: Envs - WindowsSdkVerBinPath (Windows)
-        if: ${{ startsWith(matrix.runs_on, 'windows') }}
-        uses: myci-actions/export-env-var-powershell@1
-        with:
-          name: PATH
-          value: $env:PATH;$env:WindowsSdkVerBinPath\x86;$env:WindowsSdkVerBinPath\x64
+#      # TODO https://github.com/kafkesc/ksunami/issues/39
+#      - name: Envs - WindowsSdkVerBinPath (Windows)
+#        if: ${{ startsWith(matrix.runs_on, 'windows') }}
+#        uses: myci-actions/export-env-var-powershell@1
+#        with:
+#          name: PATH
+#          value: $env:PATH;$env:WindowsSdkVerBinPath\x86;$env:WindowsSdkVerBinPath\x64
 
       - name: Toolchain ${{ matrix.target }}
         uses: actions-rs/toolchain@v1
