@@ -50,6 +50,211 @@ homebrew](https://github.com/kafkesc/ksunami/issues/14).
 
 **TODO**
 
+## Usage
+
+Compact usage instructions (`ksunami -h`):
+
+```shell
+Produce constant, configurable, cyclical waves of Kafka Records
+
+Usage: ksunami [OPTIONS] --brokers <BOOTSTRAP_BROKERS> --topic <TOPIC> --min <REC/SEC> --max <REC/SEC>
+
+Options:
+  -b, --brokers <BOOTSTRAP_BROKERS>   Initial Kafka Brokers to connect to (format: 'HOST:PORT,...')
+      --client-id <CLIENT_ID>         Client identifier used by the internal Kafka Producer [default: ksunami]
+      --partitioner <PARTITIONER>     Partitioner used by the internal Kafka Producer [default: consistent_random] [possible values: random, consistent,
+                                      consistent_random, murmur2, murmur2_random, fnv1a, fnv1a_random]
+  -c, --config <CONF_KEY:CONF_VAL>    Additional configuration used by the internal Kafka Producer (format: 'CONF_KEY:CONF_VAL')
+  -t, --topic <TOPIC>                 Destination Topic
+  -k, --key <KEY_TYPE:INPUT>          Records Key (format: 'KEY_TYPE:INPUT').
+  -p, --payload <PAYLOAD_TYPE:INPUT>  Records Payload (format: 'PAYLOAD_TYPE:INPUT').
+      --partition <PARTITION>         Destination Topic Partition
+      --head <HEAD_KEY:HEAD_VAL>      Records Header(s) (format: 'HEAD_KEY:HEAD_VAL')
+      --min <REC/SEC>                 Minimum amount of records/sec
+      --min-sec <SEC>                 How long to produce at minimum records/sec, before ramp-up [default: 60]
+      --max <REC/SEC>                 Maximum amount of records/sec
+      --max-sec <SEC>                 How long to produce at maximum records/sec, before ramp-down [default: 60]
+      --up <TRANSITION_TYPE>          Ramp-up transition from minimum to maximum records/sec [default: linear] [possible values: none, linear, ease-in, ease-out,
+                                      ease-in-out, spike-in, spike-out, spike-in-out]
+      --up-sec <SEC>                  How long the ramp-up transition should last [default: 10]
+      --down <TRANSITION_TYPE>        Ramp-down transition from maximum to minimum records/sec [default: none] [possible values: none, linear, ease-in, ease-out,
+                                      ease-in-out, spike-in, spike-out, spike-in-out]
+      --down-sec <SEC>                How long the ramp-down transition should last [default: 10]
+  -v, --verbose...                    Verbose logging.
+  -q, --quiet...                      Quiet logging.
+  -h, --help                          Print help information (use `--help` for more detail)
+  -V, --version                       Print version information
+```
+
+Extended usage instructions (`ksunami --help`):
+
+```shell
+Produce constant, configurable, cyclical waves of Kafka Records
+
+Usage: ksunami [OPTIONS] --brokers <BOOTSTRAP_BROKERS> --topic <TOPIC> --min <REC/SEC> --max <REC/SEC>
+
+Options:
+  -b, --brokers <BOOTSTRAP_BROKERS>
+          Initial Kafka Brokers to connect to (format: 'HOST:PORT,...').
+
+          Equivalent to '--config=bootstrap.servers:host:port,...'.
+
+      --client-id <CLIENT_ID>
+          Client identifier used by the internal Kafka Producer.
+
+          Equivalent to '--config=client.id:my-client-id'.
+
+          [default: ksunami]
+
+      --partitioner <PARTITIONER>
+          Partitioner used by the internal Kafka Producer.
+
+          Equivalent to '--config=partitioner:random'.
+
+          [default: consistent_random]
+
+          Possible values:
+          - random:
+            Random distribution
+          - consistent:
+            CRC32 hash of key (Empty and NULL keys are mapped to single partition)
+          - consistent_random:
+            CRC32 hash of key (Empty and NULL keys are randomly partitioned)
+          - murmur2:
+            Java Producer compatible Murmur2 hash of key (NULL keys are mapped to single partition)
+          - murmur2_random:
+            Java Producer compatible Murmur2 hash of key (NULL keys are randomly partitioned): equivalent to default partitioner in Java Producer
+          - fnv1a:
+            FNV-1a hash of key (NULL keys are mapped to single partition)
+          - fnv1a_random:
+            FNV-1a hash of key (NULL keys are randomly partitioned)
+
+  -c, --config <CONF_KEY:CONF_VAL>
+          Additional configuration used by the internal Kafka Producer (format: 'CONF_KEY:CONF_VAL').
+
+          To set multiple configurations keys, use this argument multiple times. See: https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md.
+
+  -t, --topic <TOPIC>
+          Destination Topic.
+
+          Topic must already exist.
+
+  -k, --key <KEY_TYPE:INPUT>
+          Records Key (format: 'KEY_TYPE:INPUT').
+
+          The supported key types are:
+
+          * 'string:STR': STR is a plain string
+          * 'file:PATH': PATH is a path to an existing file
+          * 'alpha:LENGTH': LENGTH is the length of a random alphanumeric string
+          * 'bytes:LENGTH': LENGTH is the length of a random bytes array
+          * 'int:MIN-MAX': MIN and MAX are limits of an inclusive range from which an integer number is picked
+          * 'float:MIN-MAX': MIN and MAX are limits of an inclusive range from which a float number is picked
+
+  -p, --payload <PAYLOAD_TYPE:INPUT>
+          Records Payload (format: 'PAYLOAD_TYPE:INPUT').
+
+          The supported payload types are:
+
+          * 'string:STR': STR is a plain string
+          * 'file:PATH': PATH is a path to an existing file
+          * 'alpha:LENGTH': LENGTH is the length of a random alphanumeric string
+          * 'bytes:LENGTH': LENGTH is the length of a random bytes array
+          * 'int:MIN-MAX': MIN and MAX are limits of an inclusive range from which an integer number is picked
+          * 'float:MIN-MAX': MIN and MAX are limits of an inclusive range from which a float number is picked
+
+      --partition <PARTITION>
+          Destination Topic Partition.
+
+          If not specified (or '-1'), Producer will rely on the Partitioner. See the '--partitioner' argument.
+
+      --head <HEAD_KEY:HEAD_VAL>
+          Records Header(s) (format: 'HEAD_KEY:HEAD_VAL').
+
+          To set multiple headers, use this argument multiple times.
+
+      --min <REC/SEC>
+          Minimum amount of records/sec
+
+      --min-sec <SEC>
+          How long to produce at minimum records/sec, before ramp-up
+
+          [default: 60]
+
+      --max <REC/SEC>
+          Maximum amount of records/sec
+
+      --max-sec <SEC>
+          How long to produce at maximum records/sec, before ramp-down
+
+          [default: 60]
+
+      --up <TRANSITION_TYPE>
+          Ramp-up transition from minimum to maximum records/sec
+
+          [default: linear]
+
+          Possible values:
+          - none:         Immediate transition, with no in-between values
+          - linear:       Linear transition, constant increments between values
+          - ease-in:      Slow increment at the beginning, accelerates half way through until the end
+          - ease-out:     Fast increment at the beginning, decelerates half way through until the end
+          - ease-in-out:  Slow increment at the beginning, accelerates half way, decelerates at the end
+          - spike-in:     Fastest increment at the beginning, slowest deceleration close to the end
+          - spike-out:    Slowest increment at the beginning, fastest acceleration close to the end
+          - spike-in-out: Fastest increment at the beginning, slow half way, fastest acceleration close to the end
+
+      --up-sec <SEC>
+          How long the ramp-up transition should last
+
+          [default: 10]
+
+      --down <TRANSITION_TYPE>
+          Ramp-down transition from maximum to minimum records/sec
+
+          [default: none]
+
+          Possible values:
+          - none:         Immediate transition, with no in-between values
+          - linear:       Linear transition, constant increments between values
+          - ease-in:      Slow increment at the beginning, accelerates half way through until the end
+          - ease-out:     Fast increment at the beginning, decelerates half way through until the end
+          - ease-in-out:  Slow increment at the beginning, accelerates half way, decelerates at the end
+          - spike-in:     Fastest increment at the beginning, slowest deceleration close to the end
+          - spike-out:    Slowest increment at the beginning, fastest acceleration close to the end
+          - spike-in-out: Fastest increment at the beginning, slow half way, fastest acceleration close to the end
+
+      --down-sec <SEC>
+          How long the ramp-down transition should last
+
+          [default: 10]
+
+  -v, --verbose...
+          Verbose logging.
+
+          * none    = 'WARN'
+          * '-v'    = 'INFO'
+          * '-vv'   = 'DEBUG'
+          * '-vvv'  = 'TRACE'
+
+          Alternatively, set environment variable 'KSUNAMI_LOG=(ERROR|WARN|INFO|DEBUG|TRACE|OFF)'.
+
+  -q, --quiet...
+          Quiet logging.
+
+          * none    = 'WARN'
+          * '-q'    = 'ERROR'
+          * '-qq'   = 'OFF'
+
+          Alternatively, set environment variable 'KSUNAMI_LOG=(ERROR|WARN|INFO|DEBUG|TRACE|OFF)'.
+
+  -h, --help
+          Print help information (use `-h` for a summary)
+
+  -V, --version
+          Print version information
+```
+
 ## Core concepts
 
 ### The 4 phases
