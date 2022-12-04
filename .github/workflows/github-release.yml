@@ -1,57 +1,69 @@
 name: GitHub Release
 
+env:
+  ARTEFACTS_DIR: "_artefacts"
+
 permissions:
   contents: write
 
 on:
   push:
-    branches: [ "main" ]
     tags: [ "v[0-9]+.[0-9]+.[0-9]+*" ]
   workflow_dispatch:
 
 jobs:
-  name: GH Release
   release:
-    # Workflow strategy for multiple targets
+    name: GH Release
+
+    # Workflow strategy supports multiple targets on multiple runners
     strategy:
       fail-fast: false
       matrix:
-        include:
+        job:
           # Linux
-          - target: x86_64-unknown-linux-gnu
-            arch: x86_64
-            runs_on: ubuntu-latest
-            use_cross: false
-            experimental: false
-
+          - { target: aarch64-unknown-linux-gnu   , runner: ubuntu-20.04, cross: true,  can_fail: false }
+          - { target: arm-unknown-linux-gnueabihf , runner: ubuntu-20.04, cross: true,  can_fail: false }
+          - { target: arm-unknown-linux-musleabihf, runner: ubuntu-20.04, cross: true,  can_fail: false }
+          - { target: i686-unknown-linux-gnu      , runner: ubuntu-20.04, cross: true,  can_fail: false }
+          - { target: i686-unknown-linux-musl     , runner: ubuntu-20.04, cross: true,  can_fail: false }
+          - { target: x86_64-unknown-linux-gnu    , runner: ubuntu-20.04, cross: true,  can_fail: false }
+          - { target: x86_64-unknown-linux-musl   , runner: ubuntu-20.04, cross: true,  can_fail: false }
           # macOS
-          - target: x86_64-apple-darwin
-            arch: x86_64
-            runs_on: macos-latest
-            use_cross: false
-            experimental: false
-
-    runs-on: ${{ matrix.runs_on }}
-    continue-on-error: ${{ matrix.experimental}}
-
-#          # Windows
+          - { target: x86_64-apple-darwin         , runner: macos-10.15,  cross: false, can_fail: false }
+          # Windows
 #          # TODO https://github.com/kafkesc/ksunami/issues/39
-#          - target: x86_64-pc-windows-msvc
-#            arch: x86_64
-#            runs_on: windows-2019
-#            use_cross: false
-#            experimental: true
+#          - { target: i686-pc-windows-msvc        , runner: windows-2019, cross: false, can_fail: true, arch: i686   }
+#          - { target: x86_64-pc-windows-gnu       , runner: windows-2019, cross: false, can_fail: true, arch: x86_64 }
+#          - { target: x86_64-pc-windows-msvc      , runner: windows-2019, cross: false, can_fail: true, arch: x86_64 }
+
+    runs-on: ${{ matrix.job.runner }}
+    continue-on-error: ${{ matrix.job.can_fail }}
+
     steps:
       - name: Check-out
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Deps (Linux)
-        if: ${{ matrix.runs_on == 'ubuntu-latest' }}
-        run: sudo apt install -y libsasl2-dev
+      - name: Dependencies
+        shell: bash
+        run: |
+          case ${{ matrix.job.target }} in
+            arm-unknown-linux-*) sudo apt-get -y install libsasl2-dev gcc-arm-linux-gnueabihf ;;
+            aarch64-unknown-linux-gnu) sudo apt-get -y install libsasl2-dev gcc-aarch64-linux-gnu ;;
+            i686-unknown-linux-*) sudo apt-get -y install libsasl2-dev ;;
+            x86_64-unknown-linux-*) sudo apt-get -y install libsasl2-dev ;;
+          esac
+
+      - name: Create info to env
+        shell: bash
+        run: |
+          echo "PROJECT_NAME=$(sed -n 's/^name = "\(.*\)"/\1/p' Cargo.toml | head -n1)" >> $GITHUB_ENV
+          echo "PROJECT_VERSION=$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n1)" >> $GITHUB_ENV
+          echo "PROJECT_MAINTAINER=$(sed -n 's/^authors = \["\(.*\)"\]/\1/p' Cargo.toml)" >> $GITHUB_ENV
+          echo "PROJECT_HOMEPAGE=$(sed -n 's/^homepage = "\(.*\)"/\1/p' Cargo.toml)" >> $GITHUB_ENV
 
 #      # TODO https://github.com/kafkesc/ksunami/issues/39
 #      - name: Deps (Windows)
-#        if: ${{ startsWith(matrix.runs_on, 'windows') }}
+#        if: ${{ startsWith(matrix.job.runner, 'windows') }}
 #        run: >-
 #          choco install visualstudio2019enterprise --package-parameters "
 #            --add Microsoft.VisualStudio.Component.VC.Tools.x86.x64
@@ -66,39 +78,54 @@ jobs:
 
 #      # TODO https://github.com/kafkesc/ksunami/issues/39
 #      - name: Envs - MSVC (Windows)
-#        if: ${{ startsWith(matrix.runs_on, 'windows') }}
+#        if: ${{ startsWith(matrix.job.runner, 'windows') }}
 #        uses: ilammy/msvc-dev-cmd@v1
 #        with:
-#          arch: ${{ matrix.arch }}
+#          arch: ${{ matrix.job.arch }}
 #          vsversion: 2019
 
 #      # TODO https://github.com/kafkesc/ksunami/issues/39
 #      - name: Envs - WindowsSdkVerBinPath (Windows)
-#        if: ${{ startsWith(matrix.runs_on, 'windows') }}
+#        if: ${{ startsWith(matrix.job.runner, 'windows') }}
 #        uses: myci-actions/export-env-var-powershell@1
 #        with:
 #          name: PATH
 #          value: $env:PATH;$env:WindowsSdkVerBinPath\x86;$env:WindowsSdkVerBinPath\x64
 
-      - name: Toolchain ${{ matrix.target }}
+      - name: Toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-          target: ${{ matrix.target }}
+          target: ${{ matrix.job.target }}
           profile: minimal
           override: true
-          default: true
 
-      - name: Build ${{ matrix.target }}
+      - name: Build
         uses: actions-rs/cargo@v1
         with:
-          use-cross: ${{ matrix.use_cross }}
+          use-cross: ${{ matrix.job.cross }}
           command: build
-          args: --release --target=${{ matrix.target }}
+          args: --locked --release --target=${{ matrix.job.target }}
 
-      - name: Show
+      - name: Strip
+        id: strip
+        shell: bash
         run: |
-          pwd
-          ls -l target/
-          ls -l target/${{ matrix.target }}/release
-          file target/${{ matrix.target }}/release/ksunami
+          # Figure out if the binary has a suffix (Windows!)
+          EXE_suffix=""
+          case ${{ matrix.job.target }} in
+            *-pc-windows-*) EXE_suffix=".exe" ;;
+          esac;
+          
+          # Setup paths
+          BIN_DIR="${{ env.ARTEFACTS_DIR }}/release-bin/"
+          mkdir -p "${BIN_DIR}"
+          BIN_NAME="${{ env.PROJECT_NAME }}${EXE_suffix}"
+          BIN_PATH="${BIN_DIR}/${BIN_NAME}"
+          
+          # Copy the release build binary to the result location
+          cp "target/${{ matrix.job.target }}/release/${BIN_NAME}" "${BIN_DIR}"
+          
+          # Let subsequent steps know where to find the (stripped) bin
+          echo ::set-output name=BIN_PATH::${BIN_PATH}
+          echo ::set-output name=BIN_NAME::${BIN_NAME}
