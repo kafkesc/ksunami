@@ -126,5 +126,5 @@ jobs:
           cp "target/${{ matrix.job.target }}/release/${BIN_NAME}" "${BIN_DIR}"
           
           # Let subsequent steps know where to find the (stripped) bin
-          echo ::set-output name=BIN_PATH::${BIN_PATH}
-          echo ::set-output name=BIN_NAME::${BIN_NAME}
+          echo "BIN_PATH=${BIN_PATH}" >> $GITHUB_OUTPUT
+          echo "BIN_NAME=${BIN_NAME}" >> $GITHUB_OUTPUT
