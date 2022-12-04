@@ -8,8 +8,7 @@ permissions:
 
 on:
   push:
-#    tags: [ "v[0-9]+.[0-9]+.[0-9]+*" ]
-    tags: [ "test*" ]
+    tags: [ "v[0-9]+.[0-9]+.[0-9]+*" ]
   workflow_dispatch:
 
 jobs:
@@ -147,7 +146,7 @@ jobs:
           cp "${{ steps.artefact.outputs.BIN_PATH }}" "$ARCHIVE_DIR"
 
           # README, LICENSE and CHANGELOG files
-          cp "README.md" "LICENSE" "$ARCHIVE_DIR"
+          cp "README.md" "LICENSE" "CHANGELOG.md" "$ARCHIVE_DIR"
 
           # base compressed package
           pushd "${PKG_STAGING}/" >/dev/null
