@@ -6,9 +6,9 @@
 
 ## Enhancements
 
-* Providing binary as part of the release process: `x86_64-apple-darwin` (#36)
-* Providing binary as part of the release process: `x86_64-unknown-linux-gnu` (#35)
-* Introducing (this) `CHANGELOG.md`, and adding it to the release packages (#19)
+* Providing binary as part of the release process: `x86_64-apple-darwin` ([i#36](https://github.com/kafkesc/ksunami/issues/36))
+* Providing binary as part of the release process: `x86_64-unknown-linux-gnu` ([i#35](https://github.com/kafkesc/ksunami/issues/35))
+* Introducing (this) `CHANGELOG.md`, and adding it to the release packages ([i#19](https://github.com/kafkesc/ksunami/issues/19))
 
 ## Bug Fixes
 
