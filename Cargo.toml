@@ -13,6 +13,7 @@ exclude = [
     ".github/",
     ".gitignore",
     "images/*",
+    "CHANGELOG_GUIDANCE.md"
 ]
 
 [dependencies]
