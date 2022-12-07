@@ -21,7 +21,7 @@ flo_curves = "0.6.1"
 clap = { version = "4.0.29", features = ["derive", "deprecated", "env", "wrap_help"] }
 log = "0.4.17"
 env_logger = "0.10.0"
-tokio = { version = "1.22.0", features = ["rt", "rt-multi-thread", "time", "sync", "macros"] }
+tokio = { version = "1.23.0", features = ["rt", "rt-multi-thread", "time", "sync", "macros"] }
 rand = "0.8.5"
 futures = "0.3.25"
 ctrlc = { version = "3.2.3", features = ["termination"] }
