@@ -52,9 +52,13 @@ homebrew](https://github.com/kafkesc/ksunami/issues/14).
 
 ## Usage
 
-Compact usage instructions (`ksunami -h`):
+Thanks to [clap](https://crates.io/crates/clap), Ksunami provides out of the box support for _compact_ and
+_extended_ usage instructions.
 
-```shell
+<details>
+<summary>Compact: <code>ksunami -h</code></summary>
+
+```
 Produce constant, configurable, cyclical waves of Kafka Records
 
 Usage: ksunami [OPTIONS] --brokers <BOOTSTRAP_BROKERS> --topic <TOPIC> --min <REC/SEC> --max <REC/SEC>
@@ -85,10 +89,12 @@ Options:
   -h, --help                          Print help information (use `--help` for more detail)
   -V, --version                       Print version information
 ```
+</details>
 
-Extended usage instructions (`ksunami --help`):
+<details>
+<summary>Extended: <code>ksunami --help</code></summary>
 
-```shell
+```
 Produce constant, configurable, cyclical waves of Kafka Records
 
 Usage: ksunami [OPTIONS] --brokers <BOOTSTRAP_BROKERS> --topic <TOPIC> --min <REC/SEC> --max <REC/SEC>
@@ -254,6 +260,7 @@ Options:
   -V, --version
           Print version information
 ```
+</details>
 
 ## Core concepts
 
@@ -307,10 +314,10 @@ Please note: in the pictures above `P0` and `P3` don't change, but all variation
 **Yes!** It's possible to define additional variations, by picking new `P1` and `P2` points,
 and adding those to a new value in the `Transition enum`. PRs welcome.
 
-## Usage
+## Configuration in depth
 
-To begin, start with `ksunami -h` or `ksunami --help` for the short and long versions of the usage instructions.
-_Go ahead, I'll wait!_.
+To begin, start by giving the [usage](#usage) section a look. If that is not enough, in this section we go more in
+depth into the most important configuration aspect of Ksunami.
 
 ### Configuring the Producer
 
@@ -432,8 +439,8 @@ Ksunami follows the long tradition of `-v/-q` to control the verbosity of it's l
 |----------:|:--------------------|:-------:|
 |  `-qq...` | `OFF`               |         |
 |      `-q` | `ERROR`             |         |
- |         - | `WARN`              |    x    |
- |      `-v` | `INFO`              |         |
+|    _none_ | `WARN`              |    x    |
+|      `-v` | `INFO`              |         |
 |     `-vv` | `DEBUG`             |         |
 | `-vvv...` | `TRACE`             |         |
 
@@ -441,10 +448,6 @@ It uses [log](https://crates.io/crates/log) and [env_logger](https://crates.io/c
 and so logging can be configured and fine-tuned using the Environment Variable `KSUNAMI_LOG`.
 Please take a look at [env_logger doc](https://docs.rs/env_logger/latest/env_logger/#enabling-logging) for
 more details.
-
-## Contributing
-
-**TODO**
 
 ## License
 
