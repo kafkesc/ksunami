@@ -42,21 +42,18 @@ and then run:
 $ cargo install ksunami
 ```
 
-In the future we aim to also provide [binary releases]([work-in-progress](https://github.com/kafkesc/ksunami/issues/13),
-a [batteries-included docker image](https://github.com/kafkesc/ksunami/issues/15) and even installation [via
-homebrew](https://github.com/kafkesc/ksunami/issues/14).
-
-## Examples
-
-**TODO**
+> **Note**
+> 
+> We are working to provide [binary releases (i#13)](https://github.com/kafkesc/ksunami/issues/13),
+> a _batteries-included_ [docker image (i#15)](https://github.com/kafkesc/ksunami/issues/15) and
+> even [homebrew (i#14)](https://github.com/kafkesc/ksunami/issues/14) installation.
 
 ## Usage
 
 Thanks to [clap](https://crates.io/crates/clap), Ksunami provides out of the box support for _compact_ and
 _extended_ usage instructions.
 
-<details>
-<summary>Compact: <code>ksunami -h</code></summary>
+### Compact: `ksunami -h`
 
 ```
 Produce constant, configurable, cyclical waves of Kafka Records
@@ -89,10 +86,8 @@ Options:
   -h, --help                          Print help information (use `--help` for more detail)
   -V, --version                       Print version information
 ```
-</details>
 
-<details>
-<summary>Extended: <code>ksunami --help</code></summary>
+### Extended: `ksunami --help`
 
 ```
 Produce constant, configurable, cyclical waves of Kafka Records
@@ -260,7 +255,119 @@ Options:
   -V, --version
           Print version information
 ```
-</details>
+
+## Examples
+
+Here are some examples of things you can do with Ksunami. It's not an exhaustive collection, but it can hopefully give
+you a good starting point, and maybe some inspiration.
+
+> **Note**
+>
+> Parameters in the examples are expressed as `{{ PARAMETER_NAME }}`.
+
+### Connect to Kafka cluster requiring [`SASL_SSL`](https://en.wikipedia.org/wiki/Simple_Authentication_and_Security_Layer)
+
+```shell
+$ ksunami \
+    --brokers {{ BOOTSTRAP_BROKERS or BROKER_ENDPOINT }} \
+    --config security.protocol:SASL_SSL \
+    --config sasl.mechanisms=PLAIN \
+    --config sasl.username:{{ USERNAME or API_KEY }} \
+    --config sasl.password:{{ PASSWORD or API_SECRET }} \  
+    --topic {{ TOPIC_NAME }} \
+    ...
+```
+
+### Min/Max [log verbosity](#log-verbosity)
+
+```shell
+# Set logging to TRACE level
+$ ksunami ... -vvv
+
+# Set logging to OFF level
+$ ksunami ... -qq
+
+# Set logging to ERROR level, via env var
+KSUNAMI_LOG=ERROR ksunami ...
+```
+
+### Low rec/sec, but spike of 1000x once-a-day, lasting 60 seconds
+
+```shell
+$ ksunami \
+    --topic {{ ONCE_A_DAY_SPIKE_TOPIC }} \
+    ... \
+    --min-sec 86310 \  # i.e. 24h - 90s
+    --min 10 \         # most of the day, this topics sees 10 rec/sec 
+    \
+    --up-sec 10 \      # transitions from min to max within 10 sec
+    --up spike-in \    # sudden jump: 10k rec/sec
+    \
+    --max-sec 60 \     # a spike of just 60s
+    --max 10000 \      # producing at 10k rec/sec 
+    \
+    --down-sec 20 \    # transitions from max to min within 20 sec
+    --down spike-out \ # sudden drop: back to just 10 rec/sec
+    ...
+```
+
+### Records in a wavy-pattern over the 24h cycle
+
+```shell
+$ ksunami \
+    --topic {{ WAVY_TOPIC }} \
+    ... \
+    --min-sec 21600 \    # first quarter of the day
+    --min 1000 \         # 1k rec/sec 
+    \
+    --up-sec 21600 \     # second quarter of the day
+    --up ease-in-out \   # stable rise
+    \
+    --max-sec 21600 \    # third quarter of the day
+    --max 3000 \         # 3k rec/sec 
+    \
+    --down-sec 21600 \   # fourth quarter of the day
+    --down ease-in-out \ # stable decline
+    ...
+```
+
+### Produce to [random partitions](#partitioner)  , regardless of key
+
+```shell
+$ ksunami \
+    --topic {{ RANDOMLY_PICKED_PARTITION_TOPIC }} \
+    ... \
+    --partitioner random
+```
+
+### Produce records with random alphanumeric `key`, but fixed `payload` from file
+
+```shell
+$ ksunami \
+    --topic {{ RANDOM_KEYS_FIXED_PAYLOADS_TOPIC }} \
+    ... \
+    --key alpha:{{ RANDOM_ALPHANUMERIC_STRING_LENGTH }} \
+    --payload file:{{ PATH_TO_LOCAL_FILE }} \
+    ...
+```
+
+### Production switches from `min` to `max` (and back) without [transition](#transitions)
+
+```shell
+$ ksunami \
+    --topic {{ NO_TRANSITON_TOPIC }} \
+    ... \
+    --min-sec 120 \
+    --min 100 \ 
+    \
+    --up none \    # switch from min to max after 120s
+    \
+    --max-sec 60 \
+    --max 1000 \
+    \
+    --down none \  # switch from max to min after 60s
+    ...
+```
 
 ## Core concepts
 
@@ -371,7 +478,7 @@ You can configure the content of each record produced by Ksunami:
 While for `--topic`, `--partition` and `--head` the input is pretty self-explanatory, `--key` and `--payload` support
 a richer set of options.
 
-The supported `KEY_TYPE/PAYLOAD_TYPE` are:
+#### Supported `key` and `payload` types
 
 |          Format | Description                                                                             |
 |----------------:|:----------------------------------------------------------------------------------------|
