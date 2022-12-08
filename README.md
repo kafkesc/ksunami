@@ -43,7 +43,6 @@ $ cargo install ksunami
 ```
 
 > **Note**
-> 
 > We are working to provide [binary releases (i#13)](https://github.com/kafkesc/ksunami/issues/13),
 > a _batteries-included_ [docker image (i#15)](https://github.com/kafkesc/ksunami/issues/15) and
 > even [homebrew (i#14)](https://github.com/kafkesc/ksunami/issues/14) installation.
@@ -262,7 +261,6 @@ Here are some examples of things you can do with Ksunami. It's not an exhaustive
 you a good starting point, and maybe some inspiration.
 
 > **Note**
->
 > Parameters in the examples are expressed as `{{ PARAMETER_NAME }}`.
 
 ### Connect to Kafka cluster requiring [`SASL_SSL`](https://en.wikipedia.org/wiki/Simple_Authentication_and_Security_Layer)
