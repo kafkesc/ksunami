@@ -10,7 +10,7 @@
 * Providing binary as part of the release process: `x86_64-unknown-linux-gnu` ([i#35](https://github.com/kafkesc/ksunami/issues/35))
 * Introducing (this) `CHANGELOG.md`, and adding it to the release packages ([i#19](https://github.com/kafkesc/ksunami/issues/19))
 * Publishing to [crates.io](https://crates.io/crates/ksunami) when a tag is pushed ([i#20](https://github.com/kafkesc/ksunami/issues/20))
-* Add examples to `README.md` ([i#40(https://github.com/kafkesc/ksunami/issues/40)])
+* Add examples to `README.md` ([i#40](https://github.com/kafkesc/ksunami/issues/40))
 
 ## Notes
 
