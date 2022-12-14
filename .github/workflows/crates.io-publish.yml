@@ -3,10 +3,10 @@ name: Creates.io Publish
 on:
   push:
     tags: [ "v[0-9]+.[0-9]+.[0-9]+*" ]
+  workflow_dispatch:
 
 env:
   CARGO_TERM_COLOR: always
-  CRATES_TOKEN: ${{ secrets.CRATES_IO_PUBLISH_TOKEN }}
 
 jobs:
   publish:
@@ -26,4 +26,6 @@ jobs:
           override: true
 
       - name: Cargo publish
-        run: cargo publish --locked --token ${CRATES_IO_PUBLISH_TOKEN}
+        run: cargo publish --locked --dry-run
+        env:
+          CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_IO_PUBLISH_TOKEN }}
