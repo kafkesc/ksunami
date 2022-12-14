@@ -1,8 +1,4 @@
-# vX.Y.Z (20YY-MM-DD) [UNRELEASED]
-
-## Breaking Changes
-
-## Features
+# v0.1.5 (2022-12-14)
 
 ## Enhancements
 
@@ -16,6 +12,7 @@
 
 * Added usage instructions (`-h` / `--help`) to `README.md`
 * Multiple dependencies updates
+* Published first blogpost announcing Ksunami ([i#11](https://github.com/kafkesc/ksunami/issues/11))
 
 # v0.1.0 -> v0.1.4 (2022-11-01)
 
