@@ -17,6 +17,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+      - name: Dependencies
+        run: sudo apt install -y libsasl2-dev
+
       - name: Check-out
         uses: actions/checkout@v3
 
