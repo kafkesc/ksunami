@@ -1,3 +1,17 @@
+# v0.1.6 (UNRELEASED)
+
+## Breaking Changes
+
+## Features
+
+## Enhancements
+
+* Reworked warning message that informs user when the internal records channel capacity is less than 20% ([commit](https://github.com/kafkesc/ksunami/commit/a8f7bee444ae59f5509ad4170c4f10c76a1ceb13))
+
+## Bug Fixes
+
+## Notes
+
 # v0.1.5 (2022-12-14)
 
 ## Enhancements
