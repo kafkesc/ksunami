@@ -57,15 +57,19 @@ impl RecordsTap {
                 info!("{sec} sec: sending {records_at} recs...");
 
                 for _ in 0..records_at {
-                    // Wan if we have less then 20% capacity on the internal records channel
-                    let chan_cap = records_tx.capacity() as f64 / records_tx.max_capacity() as f64;
-                    if chan_cap < 0.2 && log_enabled!(Warn) {
-                        warn!(
-                            "Records channel capacity at {}% ({}/{})",
-                            chan_cap * 100f64,
+                    if log_enabled!(Warn) {
+                        // Warn if we have less then 20% capacity on the internal records channel
+                        let cap = records_tx.capacity() as f64;
+                        let max_cap = records_tx.max_capacity() as f64;
+                        let remaining_cap_perc = cap / max_cap;
+                        if remaining_cap_perc < 0.2 {
+                            warn!(
+                            "Remaining capacity of (internal) Records Channel: {:.2}% ({}/{})",
+                            remaining_cap_perc * 100f64,
                             records_tx.capacity(),
                             records_tx.max_capacity()
                         );
+                        }
                     }
 
                     match generator.generate_record() {
