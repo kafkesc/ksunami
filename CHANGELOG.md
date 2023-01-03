@@ -12,6 +12,8 @@
 
 ## Notes
 
+* Multiple dependencies updates
+
 # v0.1.5 (2022-12-14)
 
 ## Enhancements
