@@ -64,11 +64,11 @@ impl RecordsTap {
                         let remaining_cap_perc = cap / max_cap;
                         if remaining_cap_perc < 0.2 {
                             warn!(
-                            "Remaining capacity of (internal) Records Channel: {:.2}% ({}/{})",
-                            remaining_cap_perc * 100f64,
-                            records_tx.capacity(),
-                            records_tx.max_capacity()
-                        );
+                                "Remaining capacity of (internal) Records Channel: {:.2}% ({}/{})",
+                                remaining_cap_perc * 100f64,
+                                cap,
+                                max_cap
+                            );
                         }
                     }
 
