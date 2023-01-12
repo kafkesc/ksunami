@@ -82,7 +82,7 @@ impl Transition {
         let (p1_t, p2_t) = match *self {
             Transition::None => {
                 return None;
-            }
+            },
 
             Transition::Linear => (Coord2(0., 0.), Coord2(1., 1.)),
 
@@ -102,7 +102,7 @@ impl Transition {
         let (p1_t, p2_t) = match *self {
             Transition::None => {
                 return None;
-            }
+            },
 
             Transition::Linear => (Coord2(0., 1.), Coord2(1., 0.)),
 

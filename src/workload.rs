@@ -173,7 +173,7 @@ impl Workload {
 
                 // Return the corresponding Y (amount of records per second) give `t` as X
                 self.up_curve.unwrap().point_at_pos(nor_sec_t).y().round() as u32
-            }
+            },
             WorkloadPhase::Max => self.max,
             WorkloadPhase::Down => {
                 // The corresponding Bézier `t` for `nor_sec` during "down" phase
@@ -181,7 +181,7 @@ impl Workload {
 
                 // Return the corresponding Y (amount of records per second) give `t` as X
                 self.down_curve.unwrap().point_at_pos(nor_sec_t).y().round() as u32
-            }
+            },
         }
     }
 }
@@ -250,16 +250,16 @@ mod tests {
             match sec_phase {
                 Min => {
                     assert_eq!(curr, 3);
-                }
+                },
                 Up => {
                     assert!(curr >= prev);
-                }
+                },
                 Max => {
                     assert_eq!(curr, 100);
-                }
+                },
                 Down => {
                     assert!(curr <= prev);
-                }
+                },
             }
 
             prev = curr;

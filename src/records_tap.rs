@@ -90,7 +90,7 @@ impl RecordsTap {
                                     shutdown_requested = true;
                                 },
                             }
-                        }
+                        },
                         Err(e) => error!("Failed to generate record: {e}"),
                     }
                 }

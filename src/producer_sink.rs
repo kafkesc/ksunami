@@ -57,11 +57,11 @@ impl ProducerSink {
                         Ok((partition, offset)) => {
                             *(send_success.lock().unwrap()) += 1;
                             trace!("Delivered => partition: {partition}, offset: {offset}")
-                        }
+                        },
                         Err((e, _)) => {
                             *(send_fail.lock().unwrap()) += 1;
                             error!("Failed record delivery: {:?}", e)
-                        }
+                        },
                     }
                 });
             }

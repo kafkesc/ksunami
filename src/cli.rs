@@ -191,7 +191,7 @@ fn kv_clap_value_parser(kv: &str) -> Result<KVPair, String> {
     let (k, v) = match kv.split_once(':') {
         None => {
             return Err("Should have 'K:V' format".to_string());
-        }
+        },
         Some((k, v)) => (k, v),
     };
 

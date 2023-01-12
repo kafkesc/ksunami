@@ -46,27 +46,27 @@ impl ValueGenerator {
                 f.read_to_end(&mut buf)?;
 
                 Ok(buf)
-            }
+            },
             ValueGenerator::RandAlphaNum(l) => {
                 let rand_alpha = Alphanumeric.sample_string(&mut thread_rng(), *l);
 
                 Ok(rand_alpha.as_bytes().to_vec())
-            }
+            },
             ValueGenerator::RandBytes(l) => {
                 let random_bytes: Vec<u8> = (0..*l).map(|_| thread_rng().gen::<u8>()).collect();
 
                 Ok(random_bytes)
-            }
+            },
             ValueGenerator::RandInt(min, max) => {
                 let random_int = thread_rng().gen_range(*min..=*max);
 
                 Ok(random_int.to_be_bytes().to_vec())
-            }
+            },
             ValueGenerator::RandFloat(min, max) => {
                 let random_float = thread_rng().gen_range(*min..=*max);
 
                 Ok(random_float.to_be_bytes().to_vec())
-            }
+            },
         }
     }
 
@@ -87,7 +87,7 @@ impl ValueGenerator {
         let (val_gen_type, val_gen_input) = match val_gen_as_str.split_once(':') {
             None => {
                 return Err("Should have 'TYPE:INPUT' format".to_string());
-            }
+            },
             Some((t, c)) => (t, c),
         };
 
@@ -101,7 +101,7 @@ impl ValueGenerator {
                 } else {
                     Ok(ValueGenerator::File(path))
                 }
-            }
+            },
             "alpha" => {
                 let res = val_gen_input.parse::<usize>();
 
@@ -109,7 +109,7 @@ impl ValueGenerator {
                     Err(e) => Err(format!("Failed to parse INPUT 'SIZE' from 'alpha:SIZE': {e}")),
                     Ok(size) => Ok(ValueGenerator::RandAlphaNum(size)),
                 }
-            }
+            },
             "bytes" => {
                 let res = val_gen_input.parse::<usize>();
 
@@ -117,7 +117,7 @@ impl ValueGenerator {
                     Err(e) => Err(format!("Failed to parse INPUT 'SIZE' from 'bytes:SIZE': {e}")),
                     Ok(size) => Ok(ValueGenerator::RandBytes(size)),
                 }
-            }
+            },
             "int" => match val_gen_input.split_once('-') {
                 None => Err("Inclusive range should have 'min-max' format".to_string()),
                 Some((min_str, max_str)) => {
@@ -132,7 +132,7 @@ impl ValueGenerator {
                     };
 
                     Ok(ValueGenerator::RandInt(min, max))
-                }
+                },
             },
             "float" => match val_gen_input.split_once('-') {
                 None => Err("Inclusive range should have 'min-max' format".to_string()),
@@ -148,7 +148,7 @@ impl ValueGenerator {
                     };
 
                     Ok(ValueGenerator::RandFloat(min, max))
-                }
+                },
             },
             _ => Err(format!("Unsupported TYPE '{val_gen_type}:...'")),
         }
