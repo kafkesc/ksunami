@@ -6,8 +6,8 @@ authors = ["Ivan De Marino <detronizator@gmail.com>", "Kafkesc <https://github.c
 repository = "https://github.com/kafkesc/ksunami"
 homepage = "https://github.com/kafkesc/ksunami"
 description = "Produce constant, configurable, cyclical waves of Kafka Records"
-license = "Apache-2.0"
-keywords = ["kafka", "workload", "testing", "performance", "developer-tools"]
+license = "MIT OR Apache-2.0"
+keywords = ["apache", "kafka", "workload", "testing", "performance", "developer-tools"]
 categories = ["command-line-utilities", "development-tools"]
 exclude = [
     ".github/",
