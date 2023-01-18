@@ -1,18 +1,13 @@
-# v0.1.6 (UNRELEASED)
-
-## Breaking Changes
-
-## Features
+# v0.1.6 (2023-01-18)
 
 ## Enhancements
 
 * Reworked warning message that informs user when the internal records channel capacity is less than 20% ([commit](https://github.com/kafkesc/ksunami/commit/a8f7bee444ae59f5509ad4170c4f10c76a1ceb13))
 
-## Bug Fixes
-
 ## Notes
 
 * Multiple dependencies updates
+* Fixed annoying CI build shield ([commit](https://github.com/kafkesc/ksunami/commit/d07c1124b4630d4e495f1dd0413ba69d95d8db9f))
 
 # v0.1.5 (2022-12-14)
 
