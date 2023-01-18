@@ -8,6 +8,9 @@
 
 * Multiple dependencies updates
 * Fixed annoying CI build shield ([commit](https://github.com/kafkesc/ksunami/commit/d07c1124b4630d4e495f1dd0413ba69d95d8db9f))
+* Updated section about "License" in README
+* Added section about "Contribution" in README
+* Updated licenses model: Ksunami is now offered in dual license - both [Apache 2.0](LICENSE-APACHE) and [MIT](LICENSE-MIT)
 
 # v0.1.5 (2022-12-14)
 
