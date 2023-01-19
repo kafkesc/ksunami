@@ -167,5 +167,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           name: v${{ env.PROJECT_VERSION }}
+          tag_name: v${{ env.PROJECT_VERSION }}
           files: |
             ${{ steps.package.outputs.PKG_PATH }}
