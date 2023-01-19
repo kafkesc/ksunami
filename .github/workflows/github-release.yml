@@ -149,7 +149,7 @@ jobs:
           cp "${{ steps.artefact.outputs.BIN_PATH }}" "$ARCHIVE_DIR"
 
           # README, LICENSE-* and CHANGELOG files
-          cp "README.md" "LICENSE-*" "CHANGELOG.md" "$ARCHIVE_DIR"
+          cp "README.md" "LICENSE-APACHE" "LICENSE-MIT" "CHANGELOG.md" "$ARCHIVE_DIR"
 
           # base compressed package
           pushd "${PKG_STAGING}/" >/dev/null
