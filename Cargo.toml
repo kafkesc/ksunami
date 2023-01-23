@@ -17,14 +17,14 @@ exclude = [
 ]
 
 [dependencies]
-flo_curves = "0.6.1"
-clap = { version = "4.1.1", features = ["derive", "deprecated", "env", "wrap_help"] }
+flo_curves = "0.7.0"
+clap = { version = "4.1.8", features = ["derive", "deprecated", "env", "wrap_help"] }
 log = "0.4.17"
 env_logger = "0.10.0"
-tokio = { version = "1.24.1", features = ["rt", "rt-multi-thread", "time", "sync", "macros"] }
+tokio = { version = "1.26.0", features = ["rt", "rt-multi-thread", "time", "sync", "macros"] }
 rand = "0.8.5"
-futures = "0.3.25"
-ctrlc = { version = "3.2.4", features = ["termination"] }
+futures = "0.3.27"
+ctrlc = { version = "3.2.5", features = ["termination"] }
 
 # TODO https://github.com/kafkesc/ksunami/issues/39
 #[target.'cfg(windows)'.dependencies]
