@@ -43,9 +43,15 @@ $ cargo install ksunami
 ```
 
 > **Note**
-> We are working to provide [binary releases (i#13)](https://github.com/kafkesc/ksunami/issues/13),
-> a _batteries-included_ [docker image (i#15)](https://github.com/kafkesc/ksunami/issues/15) and
-> even [homebrew (i#14)](https://github.com/kafkesc/ksunami/issues/14) installation.
+> We are working to provide [binary releases (i#13)](https://github.com/kafkesc/ksunami/issues/13) and
+> an [homebrew (i#14)](https://github.com/kafkesc/ksunami/issues/14) installation.
+
+### In Docker
+
+Ksunami is now available as a Docker Image: [`kafkesc/ksunami`](https://hub.docker.com/r/kafkesc/ksunami) on the Docker Hub registry.
+Both `linux/amd64` and `linux/arm64` images are available, based on Debian slim images.
+
+The `ENTRYPOINT` is the `ksunami` binary itself, so you can just pass arguments to the container execution.
 
 ## Usage
 
