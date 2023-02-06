@@ -24,7 +24,7 @@ env_logger = "0.10.0"
 tokio = { version = "1.25.0", features = ["rt", "rt-multi-thread", "time", "sync", "macros"] }
 rand = "0.8.5"
 futures = "0.3.26"
-ctrlc = { version = "3.2.4", features = ["termination"] }
+ctrlc = { version = "3.2.5", features = ["termination"] }
 
 # TODO https://github.com/kafkesc/ksunami/issues/39
 #[target.'cfg(windows)'.dependencies]
