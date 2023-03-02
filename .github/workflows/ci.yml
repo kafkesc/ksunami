@@ -24,7 +24,7 @@ jobs:
     steps:
 
       - name: Dependencies
-        run: sudo apt install -y libsasl2-dev
+        run: sudo apt update && sudo apt install -y libsasl2-dev
 
       - name: Check-out
         uses: actions/checkout@v3
