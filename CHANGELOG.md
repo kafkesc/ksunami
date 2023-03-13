@@ -1,3 +1,13 @@
+# v0.1.7 (2023-03-13)
+
+## Features
+
+* Docker: Ksunami is now available as image on Docker-Hub: [kafkesc/ksunami](https://hub.docker.com/r/kafkesc/ksunami) ([i#15](https://github.com/kafkesc/ksunami/issues/15))
+
+## Notes
+
+Multiple dependencies updates since previous release
+
 # v0.1.6 (2023-01-18)
 
 ## Enhancements
