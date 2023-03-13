@@ -4,7 +4,7 @@ use clap::ValueEnum;
 ///
 /// The documentation is lifted directly from the `librdkafka` configuration
 /// [page](https://github.com/edenhill/librdkafka/blob/master/CONFIGURATION.md).
-#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum)]
+#[derive(Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord, ValueEnum, Default)]
 #[value(rename_all = "snake_case")]
 pub enum PartitionerConfig {
     /// Random distribution.
@@ -14,6 +14,7 @@ pub enum PartitionerConfig {
     Consistent,
 
     /// CRC32 hash of key (Empty and NULL keys are randomly partitioned).
+    #[default]
     ConsistentRandom,
 
     /// Java Producer compatible Murmur2 hash of key (NULL keys are mapped to single partition).
@@ -41,11 +42,5 @@ impl PartitionerConfig {
             PartitionerConfig::Fnv1a => "fnv1a".to_string(),
             PartitionerConfig::Fnv1aRandom => "fnv1a_random".to_string(),
         }
-    }
-}
-
-impl Default for PartitionerConfig {
-    fn default() -> Self {
-        PartitionerConfig::ConsistentRandom
     }
 }
