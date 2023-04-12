@@ -18,12 +18,12 @@ exclude = [
 
 [dependencies]
 flo_curves = "0.7.0"
-clap = { version = "4.1.11", features = ["derive", "deprecated", "env", "wrap_help"] }
+clap = { version = "4.2.1", features = ["derive", "deprecated", "env", "wrap_help"] }
 log = "0.4.17"
 env_logger = "0.10.0"
-tokio = { version = "1.26.0", features = ["rt", "rt-multi-thread", "time", "sync", "macros"] }
+tokio = { version = "1.27.0", features = ["rt", "rt-multi-thread", "time", "sync", "macros"] }
 rand = "0.8.5"
-futures = "0.3.27"
+futures = "0.3.28"
 ctrlc = { version = "3.2.5", features = ["termination"] }
 
 # TODO https://github.com/kafkesc/ksunami/issues/39
