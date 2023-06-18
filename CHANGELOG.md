@@ -1,3 +1,9 @@
+# v0.1.8 (2023-06-18)
+
+## Notes
+
+Multiple dependencies updates since previous release
+
 # v0.1.7 (2023-03-13)
 
 ## Features
