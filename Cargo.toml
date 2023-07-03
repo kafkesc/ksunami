@@ -18,10 +18,10 @@ exclude = [
 
 [dependencies]
 flo_curves = "0.7.2"
-clap = { version = "4.3.8", features = ["derive", "deprecated", "env", "wrap_help"] }
+clap = { version = "4.3.10", features = ["derive", "deprecated", "env", "wrap_help"] }
 log = "0.4.19"
 env_logger = "0.10.0"
-tokio = { version = "1.28.2", features = ["rt", "rt-multi-thread", "time", "sync", "macros"] }
+tokio = { version = "1.29.1", features = ["rt", "rt-multi-thread", "time", "sync", "macros"] }
 rand = "0.8.5"
 futures = "0.3.28"
 ctrlc = { version = "3.4.0", features = ["termination"] }
@@ -31,7 +31,7 @@ ctrlc = { version = "3.4.0", features = ["termination"] }
 #rdkafka = { version = "0.31.0", features = ["cmake-build", "ssl-vendored", "libz-static"] }
 
 [target.'cfg(unix)'.dependencies]
-rdkafka = { version = "0.32.2", features = ["ssl-vendored", "gssapi-vendored", "libz-static"] }
+rdkafka = { version = "0.33.0", features = ["ssl-vendored", "gssapi-vendored", "libz-static"] }
 
 [profile.release]
 strip = true # Automatically strip symbols from the binary.
