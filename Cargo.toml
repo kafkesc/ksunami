@@ -18,7 +18,7 @@ exclude = [
 
 [dependencies]
 flo_curves = "0.7.2"
-clap = { version = "4.3.10", features = ["derive", "deprecated", "env", "wrap_help"] }
+clap = { version = "4.3.11", features = ["derive", "deprecated", "env", "wrap_help"] }
 log = "0.4.19"
 env_logger = "0.10.0"
 tokio = { version = "1.29.1", features = ["rt", "rt-multi-thread", "time", "sync", "macros"] }
