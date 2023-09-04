@@ -31,7 +31,7 @@ ctrlc = { version = "3.4.0", features = ["termination"] }
 #rdkafka = { version = "0.31.0", features = ["cmake-build", "ssl-vendored", "libz-static"] }
 
 [target.'cfg(unix)'.dependencies]
-rdkafka = { version = "0.33.2", features = ["ssl-vendored", "gssapi-vendored", "libz-static"] }
+rdkafka = { version = "0.34.0", features = ["ssl-vendored", "gssapi-vendored", "libz-static"] }
 
 [profile.release]
 strip = true # Automatically strip symbols from the binary.
