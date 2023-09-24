@@ -5,7 +5,7 @@
 Waves of Kafka Records!
 
 [![CI](https://img.shields.io/github/actions/workflow/status/kafkesc/ksunami/ci.yml?branch=main&label=CI%20%28main%29&logo=Github&style=flat-square)](https://github.com/kafkesc/ksunami/actions/workflows/ci.yml)
-[![Apache 2.0](https://img.shields.io/crates/l/ksunami?logo=apache&style=flat-square)](https://github.com/kafkesc/ksunami/blob/main/LICENSE)
+[![Apache 2.0](https://img.shields.io/crates/l/ksunami?logo=apache&style=flat-square)]([https://github.com/kafkesc/ksunami/blob/main/LICENSE](https://github.com/search?q=repo%3Akafkesc%2Fksunami+path%3ALICENSE&type=code))
 [![Crates.io downloads](https://img.shields.io/crates/d/ksunami?logo=rust&style=flat-square)](https://crates.io/crates/ksunami)
 [![](https://img.shields.io/crates/v/ksunami?label=latest%20version&logo=rust&style=flat-square)](https://crates.io/crates/ksunami/versions)
 
