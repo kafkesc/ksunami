@@ -1,3 +1,9 @@
+# v0.1.9 (YYYY-MM-DD)
+
+## Notes
+
+Multiple dependencies upgrades since previous release
+
 # v0.1.8 (2023-06-18)
 
 ## Notes

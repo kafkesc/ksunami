@@ -18,20 +18,20 @@ exclude = [
 
 [dependencies]
 flo_curves = "0.7.2"
-clap = { version = "4.4.11", features = ["derive", "deprecated", "env", "wrap_help"] }
-log = "0.4.20"
-env_logger = "0.10.1"
-tokio = { version = "1.35.0", features = ["rt", "rt-multi-thread", "time", "sync", "macros"] }
+clap = { version = "4.5.4", features = ["derive", "deprecated", "env", "wrap_help"] }
+log = "0.4.21"
+env_logger = "0.11.3"
+tokio = { version = "1.37.0", features = ["rt", "rt-multi-thread", "time", "sync", "macros"] }
 rand = "0.8.5"
-futures = "0.3.29"
-ctrlc = { version = "3.4.1", features = ["termination"] }
+futures = "0.3.30"
+ctrlc = { version = "3.4.4", features = ["termination"] }
 
 # TODO https://github.com/kafkesc/ksunami/issues/39
 #[target.'cfg(windows)'.dependencies]
 #rdkafka = { version = "0.34.0", features = ["cmake-build", "ssl-vendored", "libz-static"] }
 
 [target.'cfg(unix)'.dependencies]
-rdkafka = { version = "0.36.0", features = ["ssl-vendored", "gssapi-vendored", "libz-static"] }
+rdkafka = { version = "0.36.2", features = ["ssl-vendored", "gssapi-vendored", "libz-static"] }
 
 [profile.release]
 strip = true # Automatically strip symbols from the binary.
