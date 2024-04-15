@@ -11,6 +11,7 @@ keywords = ["kafka", "workload", "testing", "performance", "developer-tools"]
 categories = ["command-line-utilities", "development-tools"]
 exclude = [
     ".github/",
+    ".cargo/",
     ".gitignore",
     "images/*",
     "CHANGELOG_GUIDANCE.md"

@@ -1,18 +1,18 @@
-name: Creates.io Publish
+name: Publish Crate
 
 on:
+  # This workflow is designed to be triggered, when a tag is pushed against "main" branch.workflow_call:
+  # Tags must be of the format "vX.Y.Z" or "vX.Y.Z-SOMETHING".
   push:
-    tags: [ "v[0-9]+.[0-9]+.[0-9]+*" ]
-
-  # TODO Remove once we have done a couple of releases and confirmed this is solid
-  workflow_dispatch:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*"
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  publish:
-    name: Publish
+  publish-crates_io:
+    name: Publish to crates.io (${{ github.ref_name }})
 
     runs-on: ubuntu-latest
 
@@ -37,3 +37,35 @@ jobs:
         run: cargo publish --locked
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CRATES_IO_PUBLISH_TOKEN }}
+
+  publish-hub_docker_com-linux_amd64:
+    name: Publish to hub.docker.com (linux/amd64)
+
+    needs:
+      - publish-crates_io
+
+    uses: ./.github/workflows/hub.docker.com-publish.yml
+
+    with:
+      release-version: ${{ github.ref_name }}
+      target-platforms: linux/amd64
+
+    secrets:
+      dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub-password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  publish-hub_docker_com-linux_arm64:
+    name: Publish to hub.docker.com (linux/arm64)
+
+    needs:
+      - publish-crates_io
+
+    uses: ./.github/workflows/hub.docker.com-publish.yml
+
+    with:
+      release-version: ${{ github.ref_name }}
+      target-platforms: linux/arm64
+
+    secrets:
+      dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub-password: ${{ secrets.DOCKERHUB_TOKEN }}
