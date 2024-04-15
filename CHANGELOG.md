@@ -1,3 +1,13 @@
+# vNEXT (YYYY-MM-DD)
+
+## Features
+
+Setup GitHub Actions Workflow to publish Docker image kafkesc/ksunami at every release ([i#206](https://github.com/kafkesc/ksunami/issues/206))
+
+## Notes
+
+Multiple dependencies upgrades since previous release
+
 # v0.1.8 (2023-06-18)
 
 ## Notes
