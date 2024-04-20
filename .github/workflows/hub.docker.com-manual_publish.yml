@@ -1,0 +1,28 @@
+name: Manually Publish Docker Image
+
+on:
+
+  # This is for when, occasionally, we need to manually publish a docker image
+  workflow_dispatch:
+    inputs:
+
+      target-platforms:
+        type: string
+        default: linux/amd64,linux/arm64
+        description: Platforms to target when publishing the docker image
+
+      release-version:
+        required: true
+        type: string
+        description: Version to publish as docker image (eg. 'vX.Y.Z')
+
+jobs:
+  manually_publish-hub_docker_com:
+    name: Publish to hub.docker.com
+    uses: ./.github/workflows/hub.docker.com-publish.yml
+    with:
+      release-version: ${{ inputs.release-version }}
+      target-platforms: ${{ inputs.target-platforms }}
+    secrets:
+      dockerhub-username: ${{ secrets.DOCKERHUB_USERNAME }}
+      dockerhub-password: ${{ secrets.DOCKERHUB_TOKEN }}
